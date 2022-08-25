@@ -61,32 +61,29 @@ io.on("connection", (socket) => {
 
     if (room == undefined) {
       socket.join(userInfo.roomName);
-      socket.broadcast.emit("roomStatus", `Du joinade rum ${userInfo.roomName}`);
+      // socket.broadcast.emit("roomStatus", `Du joinade rum ${userInfo.roomName}`);
+
+      socket.emit('roomStatus', 'created');
       console.log(userInfo.userName + " Gick med i rummet: " + userInfo.roomName);
+
     } else if (room.size == 1 || room.size <= 2) {
       socket.join(userInfo.roomName);
       console.log('user är inne', room.size);
-      socket.broadcast.emit("roomStatus", `Antal personer i rummet ${room.size}`);
+
+      // socket.broadcast.emit("roomStatus", `Antal personer i rummet ${room.size}`);
+      socket.emit('roomStatus', 'joined');
+
     } else {
-      socket.emit('roomStatus', `full ${room.size} ${userInfo.roomName}`);
+      // socket.emit('roomStatus', `full ${room.size} ${userInfo.roomName}`);
+      socket.emit('roomStatus', 'full');
       console.log("Rummet är fullt");
     }
   });
-  //   socket.on("join", (roomToJoin) => {
-  //     console.log("Gick med i rummet: " + roomToJoin)
-  //     socket.join(roomToJoin)
-
-  // })
 
   // socket.emit()
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
-
-  // socket.on("con", (msg) => {
-  //   console.log(msg);
-  //   io.emit(msg);
-  // });
 });
 
 module.exports = { app: app, server: server };
