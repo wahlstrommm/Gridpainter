@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import io from "socket.io-client";
+import { Game } from "../Game/Game";
 
 const socket = io('http://localhost:3001', {
     "autoConnect": false,
@@ -13,6 +15,9 @@ export function Start() {
 
     const [isConnected, setIsConnected] = useState(socket.connected);
     const [userInfo, setUserInfo] = useState({ userName: "", roomName: "" });
+    const [showGamePage, setShowGamePage] = useState(false);
+    const [hiddenStartPage, setHiddenStartPage] = useState(false);
+    const [errorMessage,setErrorMessage] = useState("");
 
     useEffect(() => {
         socket.on("connect", () => {
@@ -35,12 +40,20 @@ export function Start() {
         socket.emit("userInfo", userInfo);
 
         socket.on('roomStatus', (msg) => {
-            console.log(msg);
+            console.log(typeof (msg));
+
+            if (msg === 'created' || msg === 'joined') {
+                setShowGamePage(true);
+                setHiddenStartPage(true);
+            } else if (msg === 'full') {
+                setShowGamePage(false);
+                setErrorMessage("Room is full");
+            }
         });
     };
 
     return (<>
-        <section>
+        {!hiddenStartPage ? <section>
             <h1>Hej välkommen till vårt spel hihi</h1>
 
             <form onSubmit={handleSubmit}>
@@ -49,6 +62,10 @@ export function Start() {
                 <input type="text" name='roomName' value={userInfo.roomName} placeholder="Enter room" onChange={handleChange} />
                 <input type="submit" value="Submit" />
             </form>
-        </section>
+            {errorMessage && <p>{errorMessage}</p>}
+        </section> : null}
+        {/* {showGamePage ? <Link to="/game">Välkommen till spelet</Link> : null} */}
+
+        {showGamePage ? <Game props={userInfo} /> : null}
     </>);
 }

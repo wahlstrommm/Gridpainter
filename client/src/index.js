@@ -6,18 +6,17 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Gallery } from "./Components/Gallery/Gallery";
 import { Game } from "./Components/Game/Game";
 import { Start } from "./Components/Start/Start";
-import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App/>} >
-          <Route index element={<Start />} />
-          <Route path="/game:id" element={<Game />} />
-          <Route path="/gallery" element={<Gallery />} />
-        </Route>
+        {/* <Route path="/" element={<App/>} > */}
+        <Route path="/" element={<Start />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/gallery" element={<Gallery />} />
+        {/* </Route> */}
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
