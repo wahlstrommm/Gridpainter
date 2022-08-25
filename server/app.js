@@ -52,6 +52,7 @@ app.use('/users', usersRouter);
 
 io.on("connection", (socket) => {
   // console.log(`User id: ${socket.id} is connected`);
+  let currentUser = [];
 
   socket.on('userInfo', (userInfo) => {
     console.log(userInfo, socket.id);
@@ -59,16 +60,21 @@ io.on("connection", (socket) => {
     let room = rooms.get(userInfo.roomName);
     socket.join(userInfo.roomName);
 
+
     if (room == undefined) {
       socket.join(userInfo.roomName);
       // socket.broadcast.emit("roomStatus", `Du joinade rum ${userInfo.roomName}`);
 
+      currentUser.push({ userName: userInfo.userName });
       socket.emit('roomStatus', 'created');
       console.log(userInfo.userName + " Gick med i rummet: " + userInfo.roomName);
+
+      // socket.emit('users',userInfo.userName);
 
     } else if (room.size == 1 || room.size <= 2) {
       socket.join(userInfo.roomName);
       console.log('user är inne', room.size);
+      // usersName.push({ 'spel1': userInfo.userName });
 
       // socket.broadcast.emit("roomStatus", `Antal personer i rummet ${room.size}`);
       socket.emit('roomStatus', 'joined');
@@ -80,11 +86,28 @@ io.on("connection", (socket) => {
     }
   });
 
+
+  socket.emit('users', currentUser);
+
+
+  // console.log(io.sockets.adapter.rooms);
+  // let rooms = io.sockets.adapter.rooms;
+
+
   // socket.emit()
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+  socket.on('chat', (user, chat,room) => {
+    console.log(user, chat, room);
+    io.in(room).emit(user, chat);
+  });
 });
+
+// socket.on('message', (message, nickname, room) => {
+//   console.log(`${nickname} says: ${message}`);
+//   io.in(room).emit('message', message, nickname, socket.id);
+// })
 
 module.exports = { app: app, server: server };
 
