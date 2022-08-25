@@ -7,6 +7,15 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
+
+// const mongoose = require("mongoose");
+const cors = require("cors");
+
+app.use(cors());
+
+// require('dotenv').config();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -17,4 +26,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-module.exports = app;
+// async function init() {
+//     try {
+//       await mongoose.connect(process.env.MONGOATLAS);
+//       console.log("Connected to database.");
+//     } catch (err) {
+//       console.error(err);
+//     }
+// }
+
+// init();
+
+io.on("connection", (socket) => {
+    console.log(`User id: ${socket.id} is connected`)
+
+    // socket.emit()
+    socket.on("disconnect", () => {
+        console.log("User disconnected")
+    })
+
+    socket.on("con", (msg) => {
+      console.log(msg);
+      io.emit(msg)
+    })
+})
+
+module.exports = {app: app, server: server};
+
+
