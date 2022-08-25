@@ -40,8 +40,6 @@ export function Start() {
         socket.emit("userInfo", userInfo);
 
         socket.on('roomStatus', (msg) => {
-            console.log(typeof (msg));
-
             if (msg === 'created' || msg === 'joined') {
                 setShowGamePage(true);
                 setHiddenStartPage(true);
