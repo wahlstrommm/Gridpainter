@@ -53,11 +53,30 @@ app.use('/users', usersRouter);
 io.on("connection", (socket) => {
   // console.log(`User id: ${socket.id} is connected`);
 
-  socket.on('msg', (e) => {
-    console.log(e);
-    // socket.broadcast.emit('msg', e);
-  });
+  socket.on('userInfo', (userInfo) => {
+    console.log(userInfo, socket.id);
+    let rooms = io.sockets.adapter.rooms;
+    let room = rooms.get(userInfo.roomName);
+    socket.join(userInfo.roomName);
 
+    if (room == undefined) {
+      socket.join(userInfo.roomName);
+      socket.broadcast.emit("roomStatus", `Du joinade rum ${userInfo.roomName}`);
+      console.log(userInfo.userName + " Gick med i rummet: " + userInfo.roomName);
+    } else if (room.size == 1 || room.size <= 2) {
+      socket.join(userInfo.roomName);
+      console.log('user är inne', room.size);
+      socket.broadcast.emit("roomStatus", `Antal personer i rummet ${room.size}`);
+    } else {
+      socket.emit('roomStatus', `full ${room.size} ${userInfo.roomName}`);
+      console.log("Rummet är fullt");
+    }
+  });
+  //   socket.on("join", (roomToJoin) => {
+  //     console.log("Gick med i rummet: " + roomToJoin)
+  //     socket.join(roomToJoin)
+
+  // })
 
   // socket.emit()
   socket.on("disconnect", () => {
