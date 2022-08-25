@@ -1,5 +1,16 @@
 export function Gallery() {
     return (<>
-    <h1>Galleri</h1>
-    </>)
+        <section>
+            <h1>Galleri</h1>
+            <div>
+                <img src="" alt="Text" />
+                <img src="" alt="Text" />
+                <img src="" alt="Text" />
+                <img src="" alt="Text" />
+                <img src="" alt="Text" />
+                <img src="" alt="Text" />
+            </div>
+            <button>Tillbaka</button>
+        </section>
+    </>);
 }

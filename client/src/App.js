@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.scss";
 
 // import io from "socket.io-client";
