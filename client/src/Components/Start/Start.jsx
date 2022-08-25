@@ -12,9 +12,7 @@ const socket = io('http://localhost:3001', {
 export function Start() {
 
     const [isConnected, setIsConnected] = useState(socket.connected);
-    const [userName, setUserName] = useState("");
-    const [roomName, setRoomName] = useState("");
-    const [test, setTest] = useState({ userName: "", roomName: "" });
+    const [userInfo, setUserInfo] = useState({ userName: "", roomName: "" });
 
     useEffect(() => {
         socket.on("connect", () => {
@@ -27,15 +25,18 @@ export function Start() {
 
     const handleChange = (e) => {
         let name = e.target.name;
-        console.log(name);
-        setTest({ ...test, [name]: e.target.value });
-        console.log(test);
+        setUserInfo({ ...userInfo, [name]: e.target.value });
+        console.log(userInfo);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         socket.connect();
-        socket.emit( "msg", test );
+        socket.emit("userInfo", userInfo);
+
+        socket.on('roomStatus', (msg) => {
+            console.log(msg);
+        });
     };
 
     return (<>
@@ -44,16 +45,9 @@ export function Start() {
 
             <form onSubmit={handleSubmit}>
                 <label>Användarnamn</label>
-                <input type="text" name='userName' value={test.userName} id="name" placeholder="Enter your name" onChange={handleChange} />
-                <input type="text" name='roomName' value={test.roomName} placeholder="Enter room" onChange={handleChange} />
-
+                <input type="text" name='userName' value={userInfo.userName} id="name" placeholder="Enter your name" onChange={handleChange} />
+                <input type="text" name='roomName' value={userInfo.roomName} placeholder="Enter room" onChange={handleChange} />
                 <input type="submit" value="Submit" />
-
-                {/* <> 
-                    <input key="field1" name="field1" onChange={({target}) => setInputs(state => ({...state,field1:target.value}))} value={inputs.field1}/>
-                    <input key="field2" name="field2" onChange={({target}) => setInputs(state => ({...state,field2:target.value}))} value={inputs.field2}/>
-                </> */}
-
             </form>
         </section>
     </>);
