@@ -1,13 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Gallery } from "./Components/Gallery/Gallery";
+import { Game } from "./Components/Game/Game";
+import { Start } from "./Components/Start/Start";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Start />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/gallery" element={<Gallery />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
