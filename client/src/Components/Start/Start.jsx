@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import io from "socket.io-client";
 import { Game } from "../Game/Game";
+import "./start.css";
 
 const socket = io('http://localhost:3001', {
     "autoConnect": false,
@@ -51,16 +52,18 @@ export function Start() {
     };
 
     return (<>
-        {!hiddenStartPage ? <section>
-            <h1>Hej välkommen till vårt spel hihi</h1>
+        {!hiddenStartPage ? <section className="startSection">
+            <h1 className="h1Start">Hej välkommen till vårt spel hihi</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form className="userForm" onSubmit={handleSubmit}>
                 <label>Användarnamn</label>
-                <input type="text" name='userName' value={userInfo.userName} id="name" placeholder="Enter your name" onChange={handleChange} />
-                <input type="text" name='roomName' value={userInfo.roomName} placeholder="Enter room" onChange={handleChange} />
-                <input type="submit" value="Submit" />
+                <input className="userInput" type="text" name='userName' value={userInfo.userName} id="name" placeholder="Enter your name" onChange={handleChange} />
+                <input className="userInput" type="text" name='roomName' value={userInfo.roomName} placeholder="Enter room" onChange={handleChange} />
+                <input className="playBtn" type="submit" value="Submit"  />
             </form>
             {errorMessage && <p>{errorMessage}</p>}
+
+            <button className="galleryBtn">Galleri</button>
         </section> : null}
         {/* {showGamePage ? <Link to="/game">Välkommen till spelet</Link> : null} */}
 
