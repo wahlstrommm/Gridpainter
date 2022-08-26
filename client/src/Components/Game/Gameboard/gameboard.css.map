@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "gameboard.scss"
+    ],
+    "names": [],
+    "file": "gameboard.css"
+}
