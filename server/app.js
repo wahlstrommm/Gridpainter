@@ -48,7 +48,7 @@ app.use('/users', usersRouter);
 // init();
 
 io.on('connection', (socket) => {
-  // console.log(`User id: ${socket.id} is connected`);
+  console.log(`User id: ${socket.id} is connected`);
   let currentUser = [];
 
   socket.on('userInfo', (userInfo) => {
@@ -90,14 +90,14 @@ io.on('connection', (socket) => {
     console.log('User disconnected');
   });
 
-  socket.on('chat', (user, chat, room) => {
-    console.log(user, chat, room);
-    console.log('HEJ', user.msg);
-    io.in(room).emit(user, chat);
-    socket.emit('chat', user.msg); //Funkar denna! Skickar till alla tänker ifall vi ska testa broadcast
+  socket.on('chat', (userName, msg, roomName) => {
 
+    // io.in(room).emit(user, chat);
+    io.emit('chatA', userName, msg); //Funkar denna! Skickar till alla tänker ifall vi ska testa broadcast
 
-  //socket.on('chat', (user, chat,room) => {
+    console.log(userName, msg, roomName);
+
+    //socket.on('chat', (user, chat,room) => {
     //console.log("rad 103", user, chat, room);
     //console.log("rad 104 USER", user.msg);
     //console.log("rad 104 CHat", chat, room);
@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
     //io.in(room).emit(user, chat);
     // io.in.emit('chat',user.msg);
     //socket.emit('chat',(userName,user)=>{
-      //console.log("rad 107", 'chat2', user.msg,user);
+    //console.log("rad 107", 'chat2', user.msg,user);
     //})
 
   });

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import io from "socket.io-client";
 import { Game } from "../Game/Game";
 import "./start.css";
@@ -18,37 +17,52 @@ export function Start() {
     const [userInfo, setUserInfo] = useState({ userName: "", roomName: "" });
     const [showGamePage, setShowGamePage] = useState(false);
     const [hiddenStartPage, setHiddenStartPage] = useState(false);
-    const [errorMessage,setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
-        socket.on("connect", () => {
+        socket.on("connection", () => {
             setIsConnected(true);
-            console.log("Hej från socket");
-            console.log(isConnected);
+            console.log("true", isConnected);
+
         });
-    }, [isConnected]);
+        socket.on('disconnect', () => {
+            setIsConnected(false);
+            console.log("FALSE", isConnected);
 
-
-    const handleChange = (e) => {
-        let name = e.target.name;
-        setUserInfo({ ...userInfo, [name]: e.target.value });
-        console.log(userInfo);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        socket.connect();
-        socket.emit("userInfo", userInfo);
-
-        socket.on('roomStatus', (msg) => {
-            if (msg === 'created' || msg === 'joined') {
+        });
+        //Borde denna också vara inbakad i en UseEffect eller kan den ligga som den är eftersom den ligger inuti en handleSubmit?
+        socket.on('roomStatus', (roomStatus) => {
+            if (roomStatus === 'created' || roomStatus === 'joined') {
                 setShowGamePage(true);
                 setHiddenStartPage(true);
-            } else if (msg === 'full') {
+                // socket.off('roomStatus');
+                setIsConnected(false);
+                console.log(socket);
+                console.log("FALSE2", isConnected, socket.connected);
+                                
+            } else if (roomStatus === 'full') {
                 setShowGamePage(false);
                 setErrorMessage("Room is full");
             }
         });
+        return () => {
+            socket.off('connection');
+            socket.off('disconnect');
+            socket.off('roomStatus');
+        };
+    }, []);
+
+    const handleChange = (e) => {
+        let name = e.target.name;
+        setUserInfo({ ...userInfo, [name]: e.target.value });
+        // console.log(userInfo);
+    };
+
+    const handleSubmit = (e) => {
+        socket.connect();
+        e.preventDefault();
+        socket.emit("userInfo", userInfo);
+
     };
 
     return (<>
@@ -59,13 +73,12 @@ export function Start() {
                 <label>Användarnamn</label>
                 <input className="userInput" type="text" name='userName' value={userInfo.userName} id="name" placeholder="Enter your name" onChange={handleChange} />
                 <input className="userInput" type="text" name='roomName' value={userInfo.roomName} placeholder="Enter room" onChange={handleChange} />
-                <input className="playBtn" type="submit" value="Submit"  />
+                <input className="playBtn" type="submit" value="Submit" />
             </form>
             {errorMessage && <p>{errorMessage}</p>}
 
             <button className="galleryBtn">Galleri</button>
         </section> : null}
-        {/* {showGamePage ? <Link to="/game">Välkommen till spelet</Link> : null} */}
 
         {showGamePage ? <Game props={userInfo} /> : null}
     </>);
