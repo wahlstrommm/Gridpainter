@@ -7,26 +7,23 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
-const server = require("http").Server(app);
+const server = require('http').Server(app);
 // const io = require("socket.io")(server);
 
-
-
 // const mongoose = require("mongoose");
-const cors = require("cors");
+const cors = require('cors');
 const { Server } = require('http');
 
 app.use(cors());
 
-const io = require("socket.io")(server, {
+const io = require('socket.io')(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Gridpainter"],
-    credentials: true
-  }
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Gridpainter'],
+    credentials: true,
+  },
 });
-
 
 // require('dotenv').config();
 
@@ -50,7 +47,7 @@ app.use('/users', usersRouter);
 
 // init();
 
-io.on("connection", (socket) => {
+io.on('connection', (socket) => {
   // console.log(`User id: ${socket.id} is connected`);
   let currentUser = [];
 
@@ -60,17 +57,15 @@ io.on("connection", (socket) => {
     let room = rooms.get(userInfo.roomName);
     socket.join(userInfo.roomName);
 
-
     if (room == undefined) {
       socket.join(userInfo.roomName);
       // socket.broadcast.emit("roomStatus", `Du joinade rum ${userInfo.roomName}`);
 
       currentUser.push({ userName: userInfo.userName });
       socket.emit('roomStatus', 'created');
-      console.log(userInfo.userName + " Gick med i rummet: " + userInfo.roomName);
+      console.log(userInfo.userName + ' Gick med i rummet: ' + userInfo.roomName);
 
       // socket.emit('users',userInfo.userName);
-
     } else if (room.size == 1 || room.size <= 2) {
       socket.join(userInfo.roomName);
       console.log('user är inne', room.size);
@@ -78,29 +73,27 @@ io.on("connection", (socket) => {
 
       // socket.broadcast.emit("roomStatus", `Antal personer i rummet ${room.size}`);
       socket.emit('roomStatus', 'joined');
-
     } else {
       // socket.emit('roomStatus', `full ${room.size} ${userInfo.roomName}`);
       socket.emit('roomStatus', 'full');
-      console.log("Rummet är fullt");
+      console.log('Rummet är fullt');
     }
   });
 
-
   socket.emit('users', currentUser);
-
 
   // console.log(io.sockets.adapter.rooms);
   // let rooms = io.sockets.adapter.rooms;
 
-
   // socket.emit()
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
   });
-  socket.on('chat', (user, chat,room) => {
+  socket.on('chat', (user, chat, room) => {
     console.log(user, chat, room);
+    console.log('HEJ', user.msg);
     io.in(room).emit(user, chat);
+    socket.emit('chat', user.msg); //Funkar denna! Skickar till alla tänker ifall vi ska testa broadcast
   });
 });
 
@@ -110,5 +103,3 @@ io.on("connection", (socket) => {
 // })
 
 module.exports = { app: app, server: server };
-
-
