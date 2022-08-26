@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import Chat from "./Chat/Chat";
+import "./game.css"
 
 const socket = io('http://localhost:3001', {
     "autoConnect": false,
@@ -12,8 +13,6 @@ const socket = io('http://localhost:3001', {
 export function Game(props) {
 
     const [usersName, setUsersName] = useState('');
-
-
     
     useEffect(() => {
         
@@ -29,10 +28,27 @@ export function Game(props) {
     }, []);
 
     return (<>
-        <h1>Game</h1>
-        <p>{props.props.userName}</p>
-        <p>{props.props.roomName}</p>
+        <div className="pageWrapper">
+            <div className="leftSideWrapper">
+                <section className="gameInfo">
+                    <h1>Game</h1>
+                    <p>{props.props.userName}</p>
+                    <p>{props.props.roomName}</p>
+                </section>
 
-        <Chat userName={{ "userName": props.props.userName, "roomName": props.props.roomName }} />
+                <section className="chatSection">
+                    <Chat userName={{ "userName": props.props.userName, "roomName": props.props.roomName }} />
+                </section>
+            </div>
+
+            <div className="gameboardWrapper">
+                <section className="gameboardSection">Gameboard</section>
+            </div>
+
+            <div className="resultboardWrapper">
+                <section className="resultboardSection">Resultboard</section>
+            </div>
+            
+        </div>
     </>);
 }
