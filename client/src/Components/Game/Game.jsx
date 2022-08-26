@@ -1,31 +1,9 @@
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import Chat from "./Chat/Chat";
-import "./game.css"
+import "./game.css";
 
-const socket = io('http://localhost:3001', {
-    "autoConnect": false,
-    withCredentials: true,
-    extraHeaders: {
-        "Gridpainter": "abcd"
-    }
-});
 export function Game(props) {
 
-    const [usersName, setUsersName] = useState('');
-    
-    useEffect(() => {
-        
-        socket.connect();
-        socket.on('users', (users) => {
-            // setUsersName(...usersName, users);
-            setUsersName(users);
-            // console.log("i socket",usersName);
-            console.log(users);
-        });
-
-        // console.log("utanför socket", usersName)
-    }, []);
+    const usersInfo = { userName: props.props.userName, roomName: props.props.roomName };
 
     return (<>
         <div className="pageWrapper">
@@ -37,7 +15,7 @@ export function Game(props) {
                 </section>
 
                 <section className="chatSection">
-                    <Chat userName={{ "userName": props.props.userName, "roomName": props.props.roomName }} />
+                    <Chat userInfo={usersInfo} />
                 </section>
             </div>
 
@@ -48,7 +26,7 @@ export function Game(props) {
             <div className="resultboardWrapper">
                 <section className="resultboardSection">Resultboard</section>
             </div>
-            
+
         </div>
     </>);
 }

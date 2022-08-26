@@ -10,58 +10,78 @@ const socket = io('http://localhost:3001', {
 });
 
 export function Chat(props) {
-
+    const [isConnected, setIsConnected] = useState(socket.connected);
     const [msg, setMsg] = useState("");
-
+    const [sentMsg, setSentMsg] = useState({ userName: "", msg: "" });
 
     useEffect(() => {
-        console.log("Från useEffect");
-    }, [msg]);
+        socket.on("connection", () => {
+            console.log("true", isConnected);
+            setIsConnected(true);
+        });
+        socket.on('disconnect', () => {
+            console.log("FALSE", isConnected);
 
+            setIsConnected(false);
+        });
+        socket.on('chatA', (userName, msg) => {
+            setIsConnected(false);
+            console.log("CHAT", userName, msg);
+            setSentMsg({ userName: userName, msg: msg });
+        })
+              
+        return () => {
+            socket.off('connect');
+            socket.off('disconnect');
+            socket.off('CHAT')
+        };
+    }, []);
 
     const handleChange = (e) => {
         setMsg(e.target.value);
     };
 
+    const printHtml = (userName, msg) => {
+        setSentMsg({ userName: userName, msg: msg });
+        let msgText = document.createElement('p');
+        msgText.innerText = sentMsg.userName + ": " + sentMsg.msg;
+        let chatContainer = document.getElementById('chatContainer');
+        chatContainer.append(msgText);
+
+    };
+
     const submitMsg = (e) => {
         socket.connect();
         e.preventDefault();
-        console.log(props.userName, "Klick på Skicka", msg, props.roomName);
+        console.log(props.userInfo.userName, props.userInfo.roomName, "Klick på Skicka", msg);
 
-        socket.emit("chat", {
-            userName: props.userName,
-            msg: msg,
-            roomName: props.roomName
-        });
+        //Props username och roomName kommer från Start-komponenten och ska användas i komponenten Games och chat
+        socket.emit("chat",
+            props.userInfo.userName,
+            msg,
+            props.userInfo.roomName
+        );
+        // socket.on('chatA', (userName, msg) => {
+        //     console.log("CHAT", userName, msg);
+        //     printHtml(userName, msg);
+        // });
+
     };
 
-    socket.on('chat', (t) => {
-        console.log("CHAT",t );
-    });
-    socket.on('chat2', (e) => {
-        console.log("CHAT2", e);
-    });
-    
-    let chatMsg = <>
-    </>
-    if (msg) {
-        <p> {msg} </p>
-    }
+
 
     return (<>
-        <h1>Chat</h1>
+        <section>
+            {sentMsg.userName}{sentMsg.msg}
+            <div id='chatContainer'></div>
+            <form>
+                <input type='text' placeholder="Skicka meddelande" onChange={handleChange} />
+                <button onClick={submitMsg}>Skicka</button>
+            </form>
 
-        <div>
-           {chatMsg} 
-        </div>
-
-        <form>
-            <input type='text' placeholder="Skicka meddelande" onChange={handleChange} />
-            <button onClick={submitMsg}>Skicka</button>
-        </form>
+        </section>
     </>);
 
 }
 
-export default Chat
-
+export default Chat;
