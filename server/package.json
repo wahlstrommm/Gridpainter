@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "debug": "cross-env DEBUG=gridpainter:*,socket.io:client,socket.io:server nodemon --inspect server.js",
+    "dev": "cross-env DEBUG=gridpainter:* nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +18,10 @@
     "express": "^4.18.1",
     "mongoose": "^6.5.3",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.19",
     "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.19"
   }
 }
