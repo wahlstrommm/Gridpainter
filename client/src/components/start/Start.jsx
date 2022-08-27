@@ -20,12 +20,15 @@ const Start = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    //Sätter username
     setChatUsername(username);
 
+    //Redirectar till chattrum/spelrum
     navigate(`/game/${room}`);
     console.log(room);
   };
 
+  //Requestar rumlista
   useEffect(() => {
     socket.emit("get-room-list", (rooms) => {
       setRoomlist(rooms);

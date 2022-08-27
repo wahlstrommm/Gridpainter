@@ -11,7 +11,7 @@ function App() {
         <Route path="/" element={<Start />} />
         <Route path="/game/:room_id" element={<Game />} />
         <Route path="/gallery" element={<Gallery />} />
-        {/* </Route> */}
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
     </div>
   );

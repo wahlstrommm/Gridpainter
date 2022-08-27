@@ -1,6 +1,7 @@
 const debug = require("debug")("gridpainter:socket_controller");
 let io = null;
 
+// lista av fasta rum
 const rooms = [
   {
     id: "room1",
@@ -19,15 +20,18 @@ const rooms = [
   },
 ];
 
+//hämtar rum med id
 const getRoomById = (id) => {
   debug(id);
   return rooms.find((room) => room.id === id);
 };
 
+//hämtar rum med userid
 const getRoomByUserId = (id) => {
   return rooms.find((chatroom) => chatroom.users.hasOwnProperty(id));
 };
 
+//hämtar lista av rum av en användare
 const handleGetRoomList = function (callback) {
   const room_list = rooms.map((room) => {
     return {
@@ -38,6 +42,7 @@ const handleGetRoomList = function (callback) {
   callback(room_list);
 };
 
+//när en användare disconnectar
 const handleDisconnect = function () {
   debug(`Client ${this.id} disconnected :(`);
 
@@ -54,6 +59,7 @@ const handleDisconnect = function () {
   this.broadcast.to(room.id).emit("user:list", room.users);
 };
 
+//när en användare joinar
 const handleUserJoined = function (username, room_id, callback) {
   debug(
     `User ${username} with socket id ${this.id} wants to join room '${room_id}'`
@@ -76,6 +82,7 @@ const handleUserJoined = function (username, room_id, callback) {
   io.to(room.id).emit("user:list", room.users);
 };
 
+//hanterar när en användare skickar ett meddelande
 const handleChatMessage = async function (data) {
   debug("Someone said something: ", data);
 
@@ -85,6 +92,7 @@ const handleChatMessage = async function (data) {
   this.broadcast.to(room.id).emit("chat:message", data);
 };
 
+//hanterar när en användare går ur ett rum
 const handleUserLeft = async function (username, room_id) {
   debug(`User ${username} with socket id ${this.id} left room '${room_id}'`);
 
@@ -99,18 +107,24 @@ const handleUserLeft = async function (username, room_id) {
   io.to(room.id).emit("user:list", room.users);
 };
 
+//exporterar controllern
 module.exports = function (socket, _io) {
   io = _io;
 
   debug(`Client ${socket.id} connected`);
 
+  //hanterar handleGetRoomList
   socket.on("get-room-list", handleGetRoomList);
 
+  //hanterar handleUserJoined
   socket.on("user:joined", handleUserJoined);
 
+  //hanterar handleDisconnect
   socket.on("disconnect", handleDisconnect);
 
+  //hanterar handleChatMessage
   socket.on("chat:message", handleChatMessage);
 
+  //hanterar handleUserLeft
   socket.on("user:left", handleUserLeft);
 };

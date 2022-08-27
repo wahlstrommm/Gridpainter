@@ -1,0 +1,20 @@
+.parent {
+  display: grid;
+
+  grid-template-columns: repeat(15, 1fr);
+
+  grid-template-rows: repeat(15, 1fr);
+
+  grid-column-gap: 0px;
+
+  grid-row-gap: 0px;
+
+  border: 2px solid black;
+
+  height: 500px;
+  width: 500px;
+}
+
+.gridBox {
+  border: 1px solid rgb(114, 114, 114);
+}
