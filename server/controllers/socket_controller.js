@@ -20,6 +20,7 @@ const rooms = [
 ];
 
 const getRoomById = (id) => {
+  debug(id);
   return rooms.find((room) => room.id === id);
 };
 
@@ -53,7 +54,7 @@ const handleDisconnect = function () {
   this.broadcast.to(room.id).emit("user:list", room.users);
 };
 
-const handleUserJoined = async function (username, room_id, callback) {
+const handleUserJoined = function (username, room_id, callback) {
   debug(
     `User ${username} with socket id ${this.id} wants to join room '${room_id}'`
   );
@@ -75,8 +76,33 @@ const handleUserJoined = async function (username, room_id, callback) {
   io.to(room.id).emit("user:list", room.users);
 };
 
+const handleChatMessage = async function (data) {
+  debug("Someone said something: ", data);
+
+  const room = getRoomById(data.room);
+
+  // emit `chat:message` event to everyone EXCEPT the sender
+  this.broadcast.to(room.id).emit("chat:message", data);
+};
+
+const handleUserLeft = async function (username, room_id) {
+  debug(`User ${username} with socket id ${this.id} left room '${room_id}'`);
+
+  this.leave(room_id);
+
+  const room = getRoomById(room_id);
+
+  delete room.users[this.id];
+
+  this.broadcast.to(room.id).emit("user:left", username);
+
+  io.to(room.id).emit("user:list", room.users);
+};
+
 module.exports = function (socket, _io) {
   io = _io;
+
+  debug(`Client ${socket.id} connected`);
 
   socket.on("get-room-list", handleGetRoomList);
 
@@ -84,5 +110,7 @@ module.exports = function (socket, _io) {
 
   socket.on("disconnect", handleDisconnect);
 
-  debug(`Client ${socket.id} connected`);
+  socket.on("chat:message", handleChatMessage);
+
+  socket.on("user:left", handleUserLeft);
 };

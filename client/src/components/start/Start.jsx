@@ -23,6 +23,7 @@ const Start = () => {
     setChatUsername(username);
 
     navigate(`/game/${room}`);
+    console.log(room);
   };
 
   useEffect(() => {
@@ -30,10 +31,6 @@ const Start = () => {
       setRoomlist(rooms);
     });
   }, [socket]);
-
-  // useEffect(() => {
-  //   console.log(room, roomlist);
-  // }, []);
 
   return (
     <div>
@@ -53,7 +50,7 @@ const Start = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          {/* <input className="userInput" type="text" name='roomName' value={userInfo.roomName} placeholder="Enter room" onChange={handleChange} /> */}
+
           <div>
             <label>Room</label>
 
@@ -66,9 +63,9 @@ const Start = () => {
               {roomlist.length && (
                 <>
                   <option value="">Select a room to join</option>
-                  {roomlist.map((room) => (
-                    <option key={room.id} value={room.id}>
-                      {room.name}
+                  {roomlist.map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
                     </option>
                   ))}
                 </>
