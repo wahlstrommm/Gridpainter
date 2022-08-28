@@ -35,9 +35,8 @@ section {
       border-radius: 8px;
     }
 
-    input[type=submit] {
+    input[type='submit'] {
       background-color: #0b294e;
-      border-radius: 5px;
       color: #fff;
       font-size: 1.2rem;
       border-radius: 10px;
@@ -48,12 +47,11 @@ section {
         background-color: #2b6cbc;
         color: black;
       }
-
     }
   }
 }
 
-button {
+.galleryBtn {
   width: 80px;
   height: 30px;
   border-radius: 10px;
@@ -61,11 +59,11 @@ button {
   cursor: pointer;
   border: none;
   font-size: 1.2rem;
-      font-weight: bold;
-
-        a {
-          color: #fff;
-          text-decoration: none;
-        }
-
-      }
+  font-weight: bold;
+  background-color: #0b294e;
+  
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+}

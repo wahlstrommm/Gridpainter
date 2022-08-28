@@ -93,8 +93,26 @@
       input {
         display: flex;
         flex-grow: 1;
-        width: 100%;
+        padding: 5px;
         max-height: 30px;
+        border-right: none;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border-top-left-radius: 12px;
+      }
+
+      #submit {
+        background-color: #0b294e;
+        padding: 2px;
+        color: #fff;
+        font-size: 1.2rem;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        border-left: none;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        border-top-right-radius: 2px;
       }
     }
   }
@@ -119,7 +137,7 @@
   width: 40vw;
   margin: auto;
 
-  button {
+  .resultBtn {
     width: 60%;
     height: 50px;
     border-radius: 10px;
@@ -132,8 +150,8 @@
     cursor: pointer;
 
     a {
-        color: #fff;
-        text-decoration: none;
+      color: #fff;
+      text-decoration: none;
     }
   }
 }
@@ -148,9 +166,8 @@
     width: 100%;
     background-color: rgb(34, 88, 134);
   }
-  div:nth-child(2){
+  div:nth-child(2) {
     text-align: center;
     margin-top: 10px;
   }
-
 }

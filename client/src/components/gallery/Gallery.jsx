@@ -13,7 +13,7 @@ const Gallery = () => {
       <img src="" alt="Text" />
       <img src="" alt="Text" />
     </div>
-    <button><Link to='/'>Tillbaka</Link></button>
+    <button className="startBtn"><Link to='/'>Tillbaka</Link></button>
   </section>;
 };
 

@@ -77,7 +77,7 @@ const Start = () => {
           />
         </form>
 
-        <button><Link to="/gallery" >Galleri</Link></button>
+        <button className="galleryBtn"><Link to="/gallery" >Galleri</Link></button>
       </section>
     </div>
   );

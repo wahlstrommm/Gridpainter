@@ -169,7 +169,7 @@ const Game = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <button type="submit">Skicka</button>
+            <button type="submit" id="submit">Skicka</button>
           </form>
         </div>
       </div>
@@ -182,8 +182,8 @@ const Game = () => {
         <h2>Resultat</h2>
         <h3>Tid: 276sek</h3>
         <h3>100% rätt</h3>
-        <button>Ladda ner bild</button>
-        <button><Link to='/'>Spela igen</Link></button>
+        <button className="resultBtn">Ladda ner bild</button>
+        <button className="resultBtn"><Link to='/'>Spela igen</Link></button>
       </div>
 
 

@@ -15,15 +15,17 @@ section {
     padding: 1em;
   }
 
-  button {
+  .startBtn {
     background-color: #16447a;
-    display: inline-block;
+    border: none;
     margin-bottom: 1em;
     
     a {
-      border-radius: 5px;
+      border-radius: 8px;
       background-color: #0b294e;
       color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
       text-decoration: none;
       padding: 8px;
     }
