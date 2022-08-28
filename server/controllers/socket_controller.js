@@ -67,17 +67,21 @@ const handleUserJoined = function (username, room_id, callback) {
 
   this.join(room_id);
 
+  debug(room_id.size);
+
   const room = getRoomById(room_id);
 
   room.users[this.id] = username;
 
   this.broadcast.to(room.id).emit("user:joined", username);
-
+ 
   callback({
     success: true,
     roomName: room.name,
     users: room.users,
   });
+
+  debug(room.users);
 
   io.to(room.id).emit("user:list", room.users);
 };

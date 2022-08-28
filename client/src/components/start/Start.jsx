@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useChatContext } from "../../context/ChatContextProvider";
+import "./start.scss";
 
 // const socket = io('http://localhost:3001', {
 //     "autoConnect": false,
@@ -83,7 +84,7 @@ const Start = () => {
           />
         </form>
 
-        {/* <button className="galleryBtn">Galleri</button> */}
+        <button className="galleryBtn"><Link to="/gallery" >Galleri</Link></button>
       </section>
     </div>
   );

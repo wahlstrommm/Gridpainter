@@ -24,7 +24,7 @@ const Game = () => {
 
   const handleUpdateUsers = (userlist) => {
     console.log("Got new userlist", userlist);
-    setUsers(userlist);
+    setUsers(userlist);  
   };
 
   //hanterar submit av meddelande
@@ -64,7 +64,8 @@ const Game = () => {
 
     // emittar join request
     socket.emit("user:joined", chatUsername, room_id, (status) => {
-      console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
+      // console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
+
       setConnected(true);
     });
 
@@ -113,6 +114,26 @@ const Game = () => {
   if (!connected) {
     return <p>Stand by, connecting....</p>;
   }
+
+  let colors = ['blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white'];
+
+  let activeUsers = <>För många spelare, du får titta på</>
+    if (Object.values(users).length <= 4) {
+      <>Lagom många spelare</>
+      console.log("Hamnar i if");
+
+      colors.forEach(color => {
+        console.log(color);
+        
+      })
+
+    } else {
+      console.log("Hamnar i else");
+    }
+
+
+  console.log(Object.values(users).length);
+
 
   return (
     <div>
