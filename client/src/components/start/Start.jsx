@@ -38,11 +38,10 @@ const Start = () => {
 
   return (
     <div>
-      <section className="startSection">
-        <h1 className="h1Start">Hej välkommen till vårt spel hihi</h1>
+      <section>
+        <h1>Hej välkommen till vårt spel hihi</h1>
 
         <form className="userForm" onSubmit={handleSubmit}>
-          <div>
             <label>Username</label>
             <input
               className="userInput"
@@ -53,11 +52,7 @@ const Start = () => {
               placeholder="Enter your name"
               onChange={(e) => setUsername(e.target.value)}
             />
-          </div>
-
-          <div>
             <label>Room</label>
-
             <select
               onChange={(e) => setRoom(e.target.value)}
               required
@@ -75,16 +70,14 @@ const Start = () => {
                 </>
               )}
             </select>
-          </div>
           <input
-            className="playBtn"
             type="submit"
             value="Submit"
             disabled={!username || !room}
           />
         </form>
 
-        <button className="galleryBtn"><Link to="/gallery" >Galleri</Link></button>
+        <button><Link to="/gallery" >Galleri</Link></button>
       </section>
     </div>
   );

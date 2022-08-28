@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./gallery.scss";
 
 const Gallery = () => {
@@ -12,7 +13,7 @@ const Gallery = () => {
       <img src="" alt="Text" />
       <img src="" alt="Text" />
     </div>
-    <button>Tillbaka</button>
+    <button><Link to='/'>Tillbaka</Link></button>
   </section>;
 };
 

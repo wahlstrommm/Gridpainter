@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useChatContext } from "../../context/ChatContextProvider";
 import "./game.scss";
 
@@ -24,7 +24,7 @@ const Game = () => {
 
   const handleUpdateUsers = (userlist) => {
     console.log("Got new userlist", userlist);
-    setUsers(userlist);  
+    setUsers(userlist);
   };
 
   //hanterar submit av meddelande
@@ -117,30 +117,31 @@ const Game = () => {
 
   let colors = ['blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white'];
 
-  let activeUsers = <>För många spelare, du får titta på</>
-    if (Object.values(users).length <= 4) {
-      <>Lagom många spelare</>
-      console.log("Hamnar i if");
+  // let activeUsers = <>För många spelare, du får titta på</>
 
-      colors.forEach(color => {
-        console.log(color);
-        
-      })
+  if (Object.values(users).length <= 4) {
+    <>Lagom många spelare</>;
+    console.log("Hamnar i if");
 
-    } else {
-      console.log("Hamnar i else");
-    }
+    Object.values(users)[0] && console.log(Object.values(users)[0]);
+    // colors.forEach(color => {
+
+    // })
+
+  } else {
+    console.log("Hamnar i else");
+  }
 
 
   console.log(Object.values(users).length);
 
 
   return (
-    <div>
+    <div id="Wrapper">
       <div id="chat">
-        <div>Game och chatt {room_id}</div>
         <div>
-          <h2>Users</h2>
+          <h2>Game och chatt {room_id}</h2>
+          <h3>Users</h3>
           <ul>
             {Object.values(users).map((user, index) => (
               <li key={index}>
@@ -149,17 +150,7 @@ const Game = () => {
             ))}
           </ul>
         </div>
-        <form onSubmit={handleSubmit}>
-          <input
-            ref={messageRef}
-            required
-            type="text"
-            placeholder="Skicka meddelande"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <button type="submit">Skicka</button>
-        </form>
+
         <div>
           <ul>
             {messages.map((message, i) => (
@@ -169,13 +160,39 @@ const Game = () => {
               </li>
             ))}
           </ul>
+          <form onSubmit={handleSubmit}>
+            <input
+              ref={messageRef}
+              required
+              type="text"
+              placeholder="Skicka meddelande"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <button type="submit">Skicka</button>
+          </form>
         </div>
       </div>
       {/* Kolla magnus exempel ist kanske??? dunno */}
+
       <div className="parent" id="gameboard">
         {yourDivs}
       </div>
-      <div id="resultboard"></div>
+      <div id="resultboard">
+        <h2>Resultat</h2>
+        <h3>Tid: 276sek</h3>
+        <h3>100% rätt</h3>
+        <button>Ladda ner bild</button>
+        <button><Link to='/'>Spela igen</Link></button>
+      </div>
+
+
+      <div className="leftWrapper">
+        <div>
+          <img src="" alt="computer" />
+        </div>
+      <div>Tid: 276sek</div>
+      </div>
     </div>
   );
 };
