@@ -155,7 +155,7 @@ const handleColoredPiece = async function (piece, color, roomId) {
 
   // console.log("ID:",piece,"Färg:",color, roomId);
   
-  io.to(roomId).emit("coloredPiece", piece, color);
+  io.to(roomId).emit("coloredPiece", piece, color, this.id);
 };
 
 //exporterar controllern

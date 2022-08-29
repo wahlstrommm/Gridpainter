@@ -69,18 +69,12 @@ const Game = () => {
       return;
     }
 
-  
-
     // emittar join request
     socket.emit("user:joined", chatUsername, room_id, (status) => {
       // console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
 
       setConnected(true);
     });
-
-  //   socket.on('roomAvailability', (roomStatus) => {
-  //     console.log(roomStatus); 
-  // })
 
       socket.on('roomAvailability', handleRoomStatus)
 
@@ -91,8 +85,8 @@ const Game = () => {
     socket.on("user:list", handleUpdateUsers);
 
     // Lyssnar på färgade rutor
-    socket.on("coloredPiece",(nr, color)=>{
-      console.log(nr,color)
+    socket.on("coloredPiece",(nr, color, socketId)=>{
+      console.log(nr,color, socketId)
 
       generateYourDivs(nr, color)
     })
