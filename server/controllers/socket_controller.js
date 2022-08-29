@@ -82,6 +82,18 @@ const handleUserJoined = function (username, room_id, callback) {
   });
 
   debug(room.users);
+  debug(Object.values(room.users).length)
+
+  let colors = ['blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white'];
+
+  if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 2) {
+    
+    io.to(room.id).emit("roomAvailability", 'får spela');
+    debug('Hej här spela');
+   } 
+  else {
+    io.to(room.id).emit("roomAvailability", 'får inte spela');
+  }
 
   io.to(room.id).emit("user:list", room.users);
 };
@@ -108,7 +120,7 @@ const handleUserLeft = async function (username, room_id) {
 
   this.broadcast.to(room.id).emit("user:left", username);
 
-  io.to(room.id).emit("user:list", room.users);
+  io.to(room.users).emit("user:list", room.users);
 };
 
 //exporterar controllern
