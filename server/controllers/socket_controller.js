@@ -20,8 +20,6 @@ const rooms = [
   },
 ];
 
-let userList = [];
-
 //hämtar rum med id
 const getRoomById = (id) => {
   debug(id);
@@ -71,7 +69,7 @@ const handleUserJoined = function (username, room_id, callback) {
 
   this.join(room_id);
 
-  debug(room_id.size);
+  // debug(room_id.size);
 
   const room = getRoomById(room_id);
 
@@ -85,8 +83,8 @@ const handleUserJoined = function (username, room_id, callback) {
     users: room.users,
   });
 
-  debug(room.users);
-  debug(Object.values(room.users).length)
+  // debug(room.users);
+  // debug(Object.values(room.users).length)
 
   //console.log("Room users" + room[0].users, room[0].users);
   // console.log("UserName", room.users[this.id]);
@@ -95,36 +93,35 @@ const handleUserJoined = function (username, room_id, callback) {
   // let players = [1,2,3,4]
   
   // console.log(counter);
-  
-  
+
+  let usersObject= []
   
   if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 2) {
+    io.to(room.id).emit("roomAvailability", 'får spela');
+    debug('Hej här spela');
+
     if (Object.values(room.users).length == 2) {
       let colors = ['blue', 'red'];
       let users = Object.values(room.users);
+      let keys = Object.keys(room.users);
     
       colors.forEach((color, i) => {
         currentUser = users[i];
+        let key = keys[i]
         currentColor = color
-        console.log("Test", currentColor,currentUser);
+
+        console.log("Test",key, currentUser, currentColor);
+        let userObject = { "id": key, "username": currentUser, "color": currentColor };
+        usersObject.push(userObject);
+        debug("vårt objekt", userObject);     
       });
     }
-    io.to(room.id).emit("roomAvailability", 'får spela');
-
-
-    debug('Hej här spela');
-
-    let keys = Object.keys(room.users);
-    let values = Object.values(room.users);
-    let userObject = {"id": keys, "username" : values, "color": currentColor};
-    
-    userList.push(userObject);
     
   } else {
     io.to(room.id).emit("roomAvailability", 'får inte spela');
   }
 
-  io.to(room.id).emit("user:list", room.users);
+  io.to(room.id).emit("user:list", room.users, usersObject);
 };
 
 //hanterar när en användare skickar ett meddelande

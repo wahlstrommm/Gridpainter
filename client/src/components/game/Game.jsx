@@ -8,6 +8,7 @@ const Game = () => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [connected, setConnected] = useState(false);
+  const [color, setColor] = useState("");
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -23,8 +24,9 @@ const Game = () => {
     
   };
 
-  const handleUpdateUsers = (userlist) => {
-    console.log("Got new userlist", userlist);
+  const handleUpdateUsers = (userlist, userObject) => {
+    console.log("Got new userlist", userlist, userObject);
+    // setColor(userObject.);
     setUsers(userlist);
   };
 
@@ -39,7 +41,7 @@ const Game = () => {
     if (!message.length) {
       return;
     }
-
+      
     // construct'ar meddelandeobjektet som skickas
     const msg = {
       username: chatUsername,
