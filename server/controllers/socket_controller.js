@@ -20,6 +20,8 @@ const rooms = [
   },
 ];
 
+let userList = [];
+
 //hämtar rum med id
 const getRoomById = (id) => {
   debug(id);
@@ -82,7 +84,10 @@ const handleUserJoined = function (username, room_id, callback) {
   });
 
   debug(room.users);
+  //console.log("Room users" + room[0].users, room[0].users);
+  console.log("UserName", room.users[this.id]);
   debug(Object.values(room.users).length)
+  console.log(Object.values(room.users));
 
   let colors = ['blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white'];
 
@@ -90,12 +95,25 @@ const handleUserJoined = function (username, room_id, callback) {
     
     io.to(room.id).emit("roomAvailability", 'får spela');
     debug('Hej här spela');
+
+    let keys = Object.keys(room.users);
+    let values = Object.values(room.users);
+    let userObject = {"id": keys, "username" : values, "color": "blue"};
+
+    userList.push(userObject);
+
+    console.log(userObject);
+    console.log("Objekt: " , userObject.id, userObject.color, userObject.username);
+    console.log("Objekt: ", userObject);
+    console.log("Userlist egen variabel: ", userList);
    } 
   else {
     io.to(room.id).emit("roomAvailability", 'får inte spela');
   }
 
   io.to(room.id).emit("user:list", room.users);
+
+
 };
 
 //hanterar när en användare skickar ett meddelande
