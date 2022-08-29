@@ -61,6 +61,8 @@ const handleDisconnect = function () {
   this.broadcast.to(room.id).emit("user:list", room.users);
 };
 
+let currentColor;
+
 //när en användare joinar
 const handleUserJoined = function (username, room_id, callback) {
   debug(
@@ -84,41 +86,51 @@ const handleUserJoined = function (username, room_id, callback) {
   });
 
   debug(room.users);
-  //console.log("Room users" + room[0].users, room[0].users);
-  console.log("UserName", room.users[this.id]);
   debug(Object.values(room.users).length)
-  console.log(Object.values(room.users));
 
-  let colors = ['blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white'];
+  //console.log("Room users" + room[0].users, room[0].users);
+  // console.log("UserName", room.users[this.id]);
+  // console.log(Object.values(room.users));
 
+  // let players = [1,2,3,4]
+  
+  // console.log(counter);
+  
+  
+  
   if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 2) {
+    if (Object.values(room.users).length == 2) {
+      let colors = ['blue', 'red'];
+      let users = Object.values(room.users);
     
+      colors.forEach((color, i) => {
+        currentUser = users[i];
+        currentColor = color
+        console.log("Test", currentColor,currentUser);
+      });
+    }
     io.to(room.id).emit("roomAvailability", 'får spela');
+
+
     debug('Hej här spela');
 
     let keys = Object.keys(room.users);
     let values = Object.values(room.users);
-    let userObject = {"id": keys, "username" : values, "color": "blue"};
-
+    let userObject = {"id": keys, "username" : values, "color": currentColor};
+    
     userList.push(userObject);
-
-    console.log(userObject);
-    console.log("Objekt: " , userObject.id, userObject.color, userObject.username);
-    console.log("Objekt: ", userObject);
-    console.log("Userlist egen variabel: ", userList);
-   } 
-  else {
+    
+  } else {
     io.to(room.id).emit("roomAvailability", 'får inte spela');
   }
 
   io.to(room.id).emit("user:list", room.users);
-
-
 };
 
 //hanterar när en användare skickar ett meddelande
 const handleChatMessage = async function (data) {
   debug("Someone said something: ", data);
+  // console.log("DATA",data);
 
   const room = getRoomById(data.room);
 
@@ -141,6 +153,14 @@ const handleUserLeft = async function (username, room_id) {
   io.to(room.users).emit("user:list", room.users);
 };
 
+//hantera när en ruta är klickad
+const handleColoredPiece = async function (piece, color, roomId) {
+
+  // console.log("ID:",piece,"Färg:",color, roomId);
+  
+  io.to(roomId).emit("coloredPiece", piece, color);
+};
+
 //exporterar controllern
 module.exports = function (socket, _io) {
   io = _io;
@@ -161,4 +181,7 @@ module.exports = function (socket, _io) {
 
   //hanterar handleUserLeft
   socket.on("user:left", handleUserLeft);
+
+  //hanterar handleColoredPiece
+  socket.on("coloredPiece", handleColoredPiece);
 };

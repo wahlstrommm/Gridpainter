@@ -28,6 +28,10 @@ const Game = () => {
     setUsers(userlist);
   };
 
+  const handleRoomStatus = (roomStatus) => {
+    console.log(roomStatus)
+  }
+
   //hanterar submit av meddelande
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,28 +76,45 @@ const Game = () => {
       setConnected(true);
     });
 
+  //   socket.on('roomAvailability', (roomStatus) => {
+  //     console.log(roomStatus); 
+  // })
+
+      socket.on('roomAvailability', handleRoomStatus)
+
     // Lyssnar efter meddelanden
     socket.on("chat:message", handleIncomingMessage);
 
     // Lyssnar efter en uppdaterad användarlista
     socket.on("user:list", handleUpdateUsers);
 
-    
+    // Lyssnar på färgade rutor
+    socket.on("coloredPiece",(nr, color)=>{
+      console.log(nr,color)
+
+      generateYourDivs(nr, color)
+    })
 
     return () => {
       // Slutar lyssna
       socket.off("chat:message", handleIncomingMessage);
+      socket.off('roomAvailability', handleRoomStatus)
       socket.off("user:list", handleUpdateUsers);
+      socket.off("coloredPiece");
+      socket.off("user:joined");
       socket.emit("user:left", chatUsername, room_id);
     };
   }, [socket, room_id, chatUsername, navigate]);
 
   const handleBoxClick = (id) => {
-    console.log("Click box nr " + id);
+    console.log("Click box nr " + id, "blue");
+    socket.emit("coloredPiece", id, "blue", room_id)
   };
 
-  const generateYourDivs = async () => {
+  const generateYourDivs = async (nr, color) => {
     const yourDivBoxes = [];
+
+    // console.log(nr, color);
 
     for (let i = 1; i < 226; i++) {
       yourDivBoxes.push(
@@ -104,6 +125,10 @@ const Game = () => {
           onClick={() => handleBoxClick(i)}
         ></div>
       );
+
+      if(nr == i) {
+        document.getElementById("box"+i).style.background = color;
+      }
     }
 
     return setYourDivs(yourDivBoxes);
@@ -114,10 +139,6 @@ const Game = () => {
     messageRef.current && messageRef.current.focus();
     generateYourDivs();
   }, []);
-
-  socket.on('roomAvailability', (roomStatus) => {
-    console.log(roomStatus);
-  })
 
   // Ifall det inte sker en connection
   if (!connected) {
