@@ -10,6 +10,7 @@ const Game = () => {
   const [connected, setConnected] = useState(false);
   const [color, setColor] = useState('');
   const [done, setDone] = useState(false);
+  const [allDone, setAllDone] = useState(false);
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -93,6 +94,14 @@ const Game = () => {
       generateYourDivs(nr, color);
     });
 
+    socket.on("donePlaying", (text) => {
+      console.log(text);
+
+      if (text == "done") {
+        setAllDone(true);
+      }
+    });
+
     return () => {
       // Slutar lyssna
       socket.off('chat:message', handleIncomingMessage);
@@ -104,6 +113,7 @@ const Game = () => {
     };
   }, [socket, room_id, chatUsername, navigate]);
 
+  // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
     console.log('Click box nr ' + id, color);
     socket.emit('coloredPiece', id, room_id, socketId);
@@ -111,8 +121,6 @@ const Game = () => {
 
   const generateYourDivs = async (nr, color) => {
     const yourDivBoxes = [];
-
-    // console.log(nr, color);
 
     for (let i = 1; i < 226; i++) {
       yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`} onClick={() => handleBoxClick(i, socket.id)}></div>);
@@ -124,15 +132,36 @@ const Game = () => {
 
     return setYourDivs(yourDivBoxes);
   };
+
   //event för klar knappen
   const donePlaying = () => {
     //id, boolean
     console.log(socket.id);
     //IF SocketID + Color etc.
     socket.emit('donePlaying', socket.id, room_id);
-    // socket.on();
+    // children till YourDivs? 
+    console.log(yourDivs)
+
+    let gameboard = document.getElementById("gameboard");
+
+    let colorBoard = [];
+
+    // let gameImg = [];
+    for (let i = 0; i < gameboard.children.length; i++) {
+      console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor)
+      console.log("Children:", gameboard.children[i].style)
+
+      let eachDiv = { "id": gameboard.children[i].id, "color": gameboard.children[i].style.backgroundColor }
+
+      colorBoard.push(eachDiv);
+    }
+    console.log("COLORBOARD Utanför", colorBoard);
+
+    socket.emit('saveImg', colorBoard);
+
     setDone(true);
   };
+
   useEffect(() => {
     //fokus på message input
     messageRef.current && messageRef.current.focus();
@@ -178,17 +207,19 @@ const Game = () => {
       </div>
       {/* Kolla magnus exempel ist kanske??? dunno */}
 
-      <div className="parent" id="gameboard">
+      <div className="parent" id="gameboard" >
         {yourDivs}
       </div>
-      <div id="resultboard">
-        <h2>Resultat</h2>
-        <h3>Tid: 276sek</h3>
-        <h3>100% rätt</h3>
-        <button className="resultBtn">Ladda ner bild</button>
-        <button className="resultBtn">
-          <Link to="/">Spela igen</Link>
-        </button>
+      <div id="resultboard" style={{display: allDone ? 'block' : 'none'}}>
+        <div className='containerResult'>
+          <h2>Resultat</h2>
+          {/* <h3>Tid: 276sek</h3>
+          <h3>100% rätt</h3> */}
+          <button className="resultBtn">Ladda ner bild</button>
+          <button className="resultBtn">
+            <Link to="/">Spela igen</Link>
+          </button>
+        </div>
       </div>
 
       <div className="leftWrapper">
@@ -196,12 +227,11 @@ const Game = () => {
           <img src="" alt="computer" />
         </div>
         <div>Tid: 276sek</div>
-        <button id="btnDone" disabled={done} onClick={donePlaying}>
-          Klar
-        </button>
+        <button id="btnDone" disabled={done} onClick={donePlaying}>Klar</button>
       </div>
     </div>
   );
 };
 
 export default Game;
+

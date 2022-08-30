@@ -152,14 +152,22 @@ let counter = 0;
 const handleDonePlaying = (socketId, roomId) => {
   console.log('Socket:', socketId);
   console.log(roomId);
-  console.log('COunter:', counter);
+  console.log('Counter:', counter);
   counter++;
-  console.log('COunter:', counter);
+  console.log('Counter:', counter);
   if (counter == 2) {
-    io.to(roomId).emit('donePlaying', 'hej');
+    console.log("hamnar i doneplaying, if-sats")
+    io.to(roomId).emit('donePlaying', 'done');
+
+    counter = 0;
   } else {
     // io.to(roomId).emit('donePlaying', 'nej');
   }
+};
+
+//hanterar att spara en bild
+const handleSaveImg = async function (img) {
+  console.log(img);
 };
 
 //exporterar controllern
@@ -187,5 +195,8 @@ module.exports = function (socket, _io) {
   socket.on('coloredPiece', handleColoredPiece);
 
   //hanterar spelare som är "klara"
-  socket.on('donePlaying', handleDonePlaying);
+  socket.on('donePlaying', handleDonePlaying); 
+  
+  //hanterar spelare som är "klara"
+  socket.on('saveImg', handleSaveImg);
 };
