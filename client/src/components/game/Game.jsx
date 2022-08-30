@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useChatContext } from "../../context/ChatContextProvider";
-import "./game.scss";
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useChatContext } from '../../context/ChatContextProvider';
+import './game.scss';
 
 const Game = () => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [connected, setConnected] = useState(false);
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState('');
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -17,22 +17,22 @@ const Game = () => {
   const messageRef = useRef();
 
   const handleIncomingMessage = (msg) => {
-    console.log("Received a new chat message", msg);
+    console.log('Received a new chat message', msg);
 
     // lägger till meddelande i chatt
     setMessages((prevMessages) => [...prevMessages, msg]);
-    
   };
 
   const handleUpdateUsers = (userlist, userObject) => {
-    console.log("Got new userlist", userlist, userObject);
-    // setColor(userObject.);
+    console.log('Got new userlist', userlist, userObject);
+    setColor(userObject.color);
+
     setUsers(userlist);
   };
 
   const handleRoomStatus = (roomStatus) => {
-    console.log(roomStatus)
-  }
+    console.log(roomStatus);
+  };
 
   //hanterar submit av meddelande
   const handleSubmit = async (e) => {
@@ -41,7 +41,7 @@ const Game = () => {
     if (!message.length) {
       return;
     }
-      
+
     // construct'ar meddelandeobjektet som skickas
     const msg = {
       username: chatUsername,
@@ -51,13 +51,13 @@ const Game = () => {
     };
 
     // emittar meddelande
-    socket.emit("chat:message", msg);
+    socket.emit('chat:message', msg);
 
     // lägger till meddelande i chatt
     setMessages((prevMessages) => [...prevMessages, { ...msg, self: true }]);
 
     //tömmer input och lägger fokus på input igen
-    setMessage("");
+    setMessage('');
     messageRef.current.focus();
   };
 
@@ -65,46 +65,47 @@ const Game = () => {
   useEffect(() => {
     // Inget användarnamn = redirect till home
     if (!chatUsername) {
-      navigate("/");
+      navigate('/');
       return;
     }
 
     // emittar join request
-    socket.emit("user:joined", chatUsername, room_id, (status) => {
+    socket.emit('user:joined', chatUsername, room_id, (status) => {
       // console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
 
       setConnected(true);
     });
 
-      socket.on('roomAvailability', handleRoomStatus)
+    socket.on('roomAvailability', handleRoomStatus);
 
     // Lyssnar efter meddelanden
-    socket.on("chat:message", handleIncomingMessage);
+    socket.on('chat:message', handleIncomingMessage);
 
     // Lyssnar efter en uppdaterad användarlista
-    socket.on("user:list", handleUpdateUsers);
+    socket.on('user:list', handleUpdateUsers);
 
     // Lyssnar på färgade rutor
-    socket.on("coloredPiece",(nr, color, socketId)=>{
-      console.log(nr,color, socketId)
+    socket.on('coloredPiece', (nr, color, socketId) => {
+      console.log(nr, color, socketId);
 
-      generateYourDivs(nr, color)
-    })
+      setColor(color);
+      generateYourDivs(nr, color);
+    });
 
     return () => {
       // Slutar lyssna
-      socket.off("chat:message", handleIncomingMessage);
-      socket.off('roomAvailability', handleRoomStatus)
-      socket.off("user:list", handleUpdateUsers);
-      socket.off("coloredPiece");
-      socket.off("user:joined");
-      socket.emit("user:left", chatUsername, room_id);
+      socket.off('chat:message', handleIncomingMessage);
+      socket.off('roomAvailability', handleRoomStatus);
+      socket.off('user:list', handleUpdateUsers);
+      socket.off('coloredPiece');
+      socket.off('user:joined');
+      socket.emit('user:left', chatUsername, room_id);
     };
   }, [socket, room_id, chatUsername, navigate]);
 
-  const handleBoxClick = (id) => {
-    console.log("Click box nr " + id, "blue");
-    socket.emit("coloredPiece", id, "blue", room_id)
+  const handleBoxClick = (id, socketId) => {
+    console.log('Click box nr ' + id, color);
+    socket.emit('coloredPiece', id, room_id, socketId);
   };
 
   const generateYourDivs = async (nr, color) => {
@@ -113,17 +114,10 @@ const Game = () => {
     // console.log(nr, color);
 
     for (let i = 1; i < 226; i++) {
-      yourDivBoxes.push(
-        <div
-          className="gridBox"
-          key={[i]}
-          id={`box${i}`}
-          onClick={() => handleBoxClick(i)}
-        ></div>
-      );
+      yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`} onClick={() => handleBoxClick(i, socket.id)}></div>);
 
-      if(nr == i) {
-        document.getElementById("box"+i).style.background = color;
+      if (nr == i) {
+        document.getElementById('box' + i).style.background = color;
       }
     }
 
@@ -140,7 +134,6 @@ const Game = () => {
   if (!connected) {
     return <p>Stand by, connecting....</p>;
   }
-
 
   return (
     <div id="Wrapper">
@@ -167,15 +160,10 @@ const Game = () => {
             ))}
           </ul>
           <form onSubmit={handleSubmit}>
-            <input
-              ref={messageRef}
-              required
-              type="text"
-              placeholder="Skicka meddelande"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button type="submit" id="submit">Skicka</button>
+            <input ref={messageRef} required type="text" placeholder="Skicka meddelande" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button type="submit" id="submit">
+              Skicka
+            </button>
           </form>
         </div>
       </div>
@@ -189,15 +177,16 @@ const Game = () => {
         <h3>Tid: 276sek</h3>
         <h3>100% rätt</h3>
         <button className="resultBtn">Ladda ner bild</button>
-        <button className="resultBtn"><Link to='/'>Spela igen</Link></button>
+        <button className="resultBtn">
+          <Link to="/">Spela igen</Link>
+        </button>
       </div>
-
 
       <div className="leftWrapper">
         <div>
           <img src="" alt="computer" />
         </div>
-      <div>Tid: 276sek</div>
+        <div>Tid: 276sek</div>
       </div>
     </div>
   );
