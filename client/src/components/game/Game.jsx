@@ -9,6 +9,7 @@ const Game = () => {
   const [users, setUsers] = useState([]);
   const [connected, setConnected] = useState(false);
   const [color, setColor] = useState('');
+  const [done, setDone] = useState(false);
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -123,7 +124,15 @@ const Game = () => {
 
     return setYourDivs(yourDivBoxes);
   };
-
+  //event för klar knappen
+  const donePlaying = () => {
+    //id, boolean
+    console.log(socket.id);
+    //IF SocketID + Color etc.
+    socket.emit('donePlaying', socket.id, room_id);
+    // socket.on();
+    setDone(true);
+  };
   useEffect(() => {
     //fokus på message input
     messageRef.current && messageRef.current.focus();
@@ -187,6 +196,9 @@ const Game = () => {
           <img src="" alt="computer" />
         </div>
         <div>Tid: 276sek</div>
+        <button id="btnDone" disabled={done} onClick={donePlaying}>
+          Klar
+        </button>
       </div>
     </div>
   );
