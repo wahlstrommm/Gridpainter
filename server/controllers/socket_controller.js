@@ -1,21 +1,21 @@
-const debug = require("debug")("gridpainter:socket_controller");
+const debug = require('debug')('gridpainter:socket_controller');
 let io = null;
 
 // lista av fasta rum
 const rooms = [
   {
-    id: "room1",
-    name: "Room 1",
+    id: 'room1',
+    name: 'Room 1',
     users: {},
   },
   {
-    id: "room2",
-    name: "Room 2",
+    id: 'room2',
+    name: 'Room 2',
     users: {},
   },
   {
-    id: "room3",
-    name: "Room 3",
+    id: 'room3',
+    name: 'Room 3',
     users: {},
   },
 ];
@@ -52,87 +52,69 @@ const handleDisconnect = function () {
     return;
   }
 
-  this.broadcast.to(room.id).emit("user:disconnected", room.users[this.id]);
+  this.broadcast.to(room.id).emit('user:disconnected', room.users[this.id]);
 
   delete room.users[this.id];
 
-  this.broadcast.to(room.id).emit("user:list", room.users);
+  this.broadcast.to(room.id).emit('user:list', room.users);
 };
 
 let currentColor;
+let usersObject = [];
 
 //när en användare joinar
 const handleUserJoined = function (username, room_id, callback) {
-  debug(
-    `User ${username} with socket id ${this.id} wants to join room '${room_id}'`
-  );
+  debug(`User ${username} with socket id ${this.id} wants to join room '${room_id}'`);
 
   this.join(room_id);
-
-  // debug(room_id.size);
 
   const room = getRoomById(room_id);
 
   room.users[this.id] = username;
 
-  this.broadcast.to(room.id).emit("user:joined", username);
- 
+  this.broadcast.to(room.id).emit('user:joined', username);
+
   callback({
     success: true,
     roomName: room.name,
     users: room.users,
   });
 
-  // debug(room.users);
-  // debug(Object.values(room.users).length)
-
-  //console.log("Room users" + room[0].users, room[0].users);
-  // console.log("UserName", room.users[this.id]);
-  // console.log(Object.values(room.users));
-
-  // let players = [1,2,3,4]
-  
-  // console.log(counter);
-
-  let usersObject= []
-  
   if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 2) {
-    io.to(room.id).emit("roomAvailability", 'får spela');
+    io.to(room.id).emit('roomAvailability', 'får spela');
     debug('Hej här spela');
 
     if (Object.values(room.users).length == 2) {
       let colors = ['blue', 'red'];
       let users = Object.values(room.users);
       let keys = Object.keys(room.users);
-    
+
       colors.forEach((color, i) => {
         currentUser = users[i];
-        let key = keys[i]
-        currentColor = color
+        let key = keys[i];
+        currentColor = color;
 
-        console.log("Test",key, currentUser, currentColor);
-        let userObject = { "id": key, "username": currentUser, "color": currentColor };
+        console.log('Test', key, currentUser, currentColor);
+        let userObject = { id: key, username: currentUser, color: currentColor };
         usersObject.push(userObject);
-        debug("vårt objekt", userObject);     
+        debug('vårt objekt', userObject);
       });
     }
-    
   } else {
-    io.to(room.id).emit("roomAvailability", 'får inte spela');
+    io.to(room.id).emit('roomAvailability', 'får inte spela');
   }
 
-  io.to(room.id).emit("user:list", room.users, usersObject);
+  io.to(room.id).emit('user:list', room.users, usersObject);
 };
 
 //hanterar när en användare skickar ett meddelande
 const handleChatMessage = async function (data) {
-  debug("Someone said something: ", data);
-  // console.log("DATA",data);
+  debug('Someone said something: ', data);
 
   const room = getRoomById(data.room);
 
   // emit `chat:message` event to everyone EXCEPT the sender
-  this.broadcast.to(room.id).emit("chat:message", data);
+  this.broadcast.to(room.id).emit('chat:message', data);
 };
 
 //hanterar när en användare går ur ett rum
@@ -145,17 +127,39 @@ const handleUserLeft = async function (username, room_id) {
 
   delete room.users[this.id];
 
-  this.broadcast.to(room.id).emit("user:left", username);
+  this.broadcast.to(room.id).emit('user:left', username);
 
-  io.to(room.users).emit("user:list", room.users);
+  io.to(room.users).emit('user:list', room.users);
 };
 
 //hantera när en ruta är klickad
-const handleColoredPiece = async function (piece, color, roomId) {
+const handleColoredPiece = async function (piece, roomId, socketId) {
+  let rightColor;
 
-  // console.log("ID:",piece,"Färg:",color, roomId);
-  
-  io.to(roomId).emit("coloredPiece", piece, color, this.id);
+  for (let i = 0; i < usersObject.length; i++) {
+    rightColor = usersObject[i].color;
+
+    if (usersObject[i].id == socketId) {
+      io.to(roomId).emit('coloredPiece', piece, rightColor, this.id);
+    } else {
+      console.log('ingen matchning');
+    }
+  }
+};
+
+let counter = 0;
+//hantera att en Klar-knapp är klickad
+const handleDonePlaying = (socketId, roomId) => {
+  console.log('Socket:', socketId);
+  console.log(roomId);
+  console.log('COunter:', counter);
+  counter++;
+  console.log('COunter:', counter);
+  if (counter == 2) {
+    io.to(roomId).emit('donePlaying', 'hej');
+  } else {
+    // io.to(roomId).emit('donePlaying', 'nej');
+  }
 };
 
 //exporterar controllern
@@ -165,20 +169,23 @@ module.exports = function (socket, _io) {
   debug(`Client ${socket.id} connected`);
 
   //hanterar handleGetRoomList
-  socket.on("get-room-list", handleGetRoomList);
+  socket.on('get-room-list', handleGetRoomList);
 
   //hanterar handleUserJoined
-  socket.on("user:joined", handleUserJoined);
+  socket.on('user:joined', handleUserJoined);
 
   //hanterar handleDisconnect
-  socket.on("disconnect", handleDisconnect);
+  socket.on('disconnect', handleDisconnect);
 
   //hanterar handleChatMessage
-  socket.on("chat:message", handleChatMessage);
+  socket.on('chat:message', handleChatMessage);
 
   //hanterar handleUserLeft
-  socket.on("user:left", handleUserLeft);
+  socket.on('user:left', handleUserLeft);
 
   //hanterar handleColoredPiece
-  socket.on("coloredPiece", handleColoredPiece);
+  socket.on('coloredPiece', handleColoredPiece);
+
+  //hanterar spelare som är "klara"
+  socket.on('donePlaying', handleDonePlaying);
 };
