@@ -84,6 +84,8 @@ const handleUserJoined = function (username, room_id, callback) {
     io.to(room.id).emit('roomAvailability', 'får spela');
     debug('Hej här spela');
 
+    usersObject = [];
+
     if (Object.values(room.users).length == 2) {
       let colors = ['blue', 'red'];
       let users = Object.values(room.users);
