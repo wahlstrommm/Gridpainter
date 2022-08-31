@@ -1,0 +1,14 @@
+POST http://localhost:4000/img/save 
+Content-Type: application/json
+
+{
+    "email": "true@true.com", "password": "true"
+
+}
+
+###
+
+GET http://localhost:4000/img
+
+
+###

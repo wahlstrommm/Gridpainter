@@ -14,7 +14,6 @@ const Game = () => {
   const [color, setColor] = useState('');
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
-  // const [save, setSave] = useState([]);
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -201,7 +200,7 @@ const Game = () => {
     // } 
 
 
-    axios.post("http://localhost:4000/save", colorBoard, {
+    axios.post("http://localhost:4000/img/save", colorBoard, {
       headers: {
         "Content-Type": "application/json"
       }

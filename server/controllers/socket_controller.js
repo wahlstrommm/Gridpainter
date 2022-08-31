@@ -1,3 +1,4 @@
+require("dotenv").config();
 const debug = require('debug')('gridpainter:socket_controller');
 let io = null;
 
@@ -83,7 +84,7 @@ const handleUserJoined = function (username, room_id, callback) {
   if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 2) {
     io.to(room.id).emit('roomAvailability', 'får spela');
     debug('Hej här spela');
-
+    usersObject = [];
     if (Object.values(room.users).length == 2) {
       let colors = ['blue', 'red'];
       let users = Object.values(room.users);
@@ -166,9 +167,34 @@ const handleDonePlaying = (socketId, roomId) => {
 };
 
 //hanterar att spara en bild
-const handleSaveImg = async function (img) {
-  console.log(img);
-};
+// let images = [[], [], []];
+
+// const handleSaveImg = async function (img, roomId) {
+//   console.log('img', img, roomId);
+  // const url = (process.env.MONGOATLAS);
+  // mongoose.connect(url)
+  
+  
+  // images.push(img);
+  // console.log("images", images.length);
+  // Här kan man jämföra med de bilderna vi har istället jag provade det 
+  // let count = 0;
+
+  // images.forEach(el => {
+    // for (let i = 0; i < img; i++){
+    //   if (el.color == img[i].color) {
+    //     count++;
+    //     console.log('image is equal to img', count);
+    //     console.log(roomId);
+    //     io.to(roomId).emit('result', 'success');
+    //   }
+    //   else if (el.color == img[i].color) {
+    //     count--;
+    //     console.log('image is not equal to img ', count);
+    //     io.to(roomId).emit('result', 'fail');
+    //   }
+  // });
+// };
 
 //exporterar controllern
 module.exports = function (socket, _io) {
@@ -197,6 +223,7 @@ module.exports = function (socket, _io) {
   //hanterar spelare som är "klara"
   socket.on('donePlaying', handleDonePlaying); 
   
-  //hanterar spelare som är "klara"
-  socket.on('saveImg', handleSaveImg);
+  // //hanterar spelare som är "klara"
+  // socket.on('saveImg', handleSaveImg);
 };
+
