@@ -1,16 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useChatContext } from '../../context/ChatContextProvider';
+// import { PostImgService } from '../../services/PostImgService';
 import './game.scss';
+import axios from "axios";
 
 const Game = () => {
   const [message, setMessage] = useState('');
+  const [result, setResult] = useState('');
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [connected, setConnected] = useState(false);
   const [color, setColor] = useState('');
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
+  // const [save, setSave] = useState([]);
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -18,6 +22,7 @@ const Game = () => {
   const navigate = useNavigate();
   const messageRef = useRef();
 
+ 
   const handleIncomingMessage = (msg) => {
     console.log('Received a new chat message', msg);
 
@@ -26,7 +31,7 @@ const Game = () => {
   };
 
   const handleUpdateUsers = (userlist, userObject) => {
-    console.log('Got new userlist', userlist, userObject);
+    console.log('Got new userlist', userObject);
     setColor(userObject.color);
 
     setUsers(userlist);
@@ -102,16 +107,35 @@ const Game = () => {
       }
     });
 
+    socket.on('result', (result) => {
+      console.log(result);
+      setResult(result);
+    });
+
     return () => {
       // Slutar lyssna
       socket.off('chat:message', handleIncomingMessage);
       socket.off('roomAvailability', handleRoomStatus);
       socket.off('user:list', handleUpdateUsers);
       socket.off('coloredPiece');
+      socket.off('result');
       socket.off('user:joined');
       socket.emit('user:left', chatUsername, room_id);
     };
-  }, [socket, room_id, chatUsername, navigate]);
+  }, [socket, room_id, chatUsername, navigate, result]);
+
+
+  // Service för att spara bild
+  // useEffect(() => {
+  //   // let service = new PostImgService();
+
+  //   service.postImg(save).then(res => {
+  //     console.log("Hej från useEffect, save img", res);
+  //     console.log(res);
+  //   }).catch(err => {
+  //     console.log(err);
+  //   })
+  // }, [save]);
 
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
@@ -133,6 +157,8 @@ const Game = () => {
     return setYourDivs(yourDivBoxes);
   };
 
+  
+
   //event för klar knappen
   const donePlaying = () => {
     //id, boolean
@@ -140,7 +166,7 @@ const Game = () => {
     //IF SocketID + Color etc.
     socket.emit('donePlaying', socket.id, room_id);
     // children till YourDivs? 
-    console.log(yourDivs)
+    console.log(yourDivs);
 
     let gameboard = document.getElementById("gameboard");
 
@@ -148,18 +174,49 @@ const Game = () => {
 
     // let gameImg = [];
     for (let i = 0; i < gameboard.children.length; i++) {
-      console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor)
-      console.log("Children:", gameboard.children[i].style)
+      console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor);
+      console.log("Children:", gameboard.children[i].style);
 
-      let eachDiv = { "id": gameboard.children[i].id, "color": gameboard.children[i].style.backgroundColor }
-
-      colorBoard.push(eachDiv);
+      let eachDiv = { "id": gameboard.children[i].id, "color": gameboard.children[i].style.backgroundColor };
+      if (eachDiv.color == "") {
+        eachDiv.color = "0";
+        colorBoard.push(eachDiv);
+      }
+      else {
+        colorBoard.push(eachDiv);
+      }
     }
     console.log("COLORBOARD Utanför", colorBoard);
 
-    socket.emit('saveImg', colorBoard);
-
     setDone(true);
+    // socket.emit('saveImg', colorBoard, room_id);
+
+    // setSave(colorBoard);
+    // console.log("SAVE", save[0]);
+
+    
+    //  const postImg = async () => {
+    //   const response = await axios.post("http://localhost:4000/img/save", colorBoard);
+    //   console.log(response.data);
+    // } 
+
+
+    axios.post("http://localhost:4000/save", colorBoard, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => {
+      console.log("Hej från axios, save img", res);
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    })
+    
+  };
+
+  const saveImg = () => {
+    // console.log("saveImag");
+    console.log(result);
   };
 
   useEffect(() => {
@@ -205,17 +262,17 @@ const Game = () => {
           </form>
         </div>
       </div>
-      {/* Kolla magnus exempel ist kanske??? dunno */}
+
 
       <div className="parent" id="gameboard" >
         {yourDivs}
       </div>
-      <div id="resultboard" style={{display: allDone ? 'block' : 'none'}}>
+      <div id="resultboard" style={{ display: allDone ? 'block' : 'none' }}>
         <div className='containerResult'>
           <h2>Resultat</h2>
-          {/* <h3>Tid: 276sek</h3>
-          <h3>100% rätt</h3> */}
-          <button className="resultBtn">Ladda ner bild</button>
+          <h3>{result}</h3>
+          {/* <h3>100% rätt</h3> */}
+          <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button>
           <button className="resultBtn">
             <Link to="/">Spela igen</Link>
           </button>
