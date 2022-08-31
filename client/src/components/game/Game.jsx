@@ -138,7 +138,7 @@ const Game = () => {
 
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
-    console.log('Click box nr ' + id, color);
+    console.log('Click box nr ' + id, color, socketId);
     socket.emit('coloredPiece', id, room_id, socketId);
   };
 
@@ -200,7 +200,7 @@ const Game = () => {
     // } 
 
 
-    axios.post("http://localhost:4000/img/save", colorBoard, {
+    axios.post("http://localhost:4000/img/save", { colorBoard, room_id}, {
       headers: {
         "Content-Type": "application/json"
       }

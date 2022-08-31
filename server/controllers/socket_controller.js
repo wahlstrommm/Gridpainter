@@ -62,6 +62,7 @@ const handleDisconnect = function () {
 
 let currentColor;
 let usersObject = [];
+let allUsers = [];
 
 //när en användare joinar
 const handleUserJoined = function (username, room_id, callback) {
@@ -84,8 +85,11 @@ const handleUserJoined = function (username, room_id, callback) {
   if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 2) {
     io.to(room.id).emit('roomAvailability', 'får spela');
     debug('Hej här spela');
+    debug('room_id', room_id, 'room.id', room.id);
+
     usersObject = [];
-    if (Object.values(room.users).length == 2) {
+
+    if (Object.values(room.users).length == 2 && room_id == room.id) {
       let colors = ['blue', 'red'];
       let users = Object.values(room.users);
       let keys = Object.keys(room.users);
@@ -98,6 +102,7 @@ const handleUserJoined = function (username, room_id, callback) {
         console.log('Test', key, currentUser, currentColor);
         let userObject = { id: key, username: currentUser, color: currentColor };
         usersObject.push(userObject);
+        allUsers.push(userObject);
         debug('vårt objekt', userObject);
       });
     }
@@ -137,10 +142,12 @@ const handleUserLeft = async function (username, room_id) {
 const handleColoredPiece = async function (piece, roomId, socketId) {
   let rightColor;
 
-  for (let i = 0; i < usersObject.length; i++) {
-    rightColor = usersObject[i].color;
+  console.log("log rad 141", piece, roomId, socketId);
 
-    if (usersObject[i].id == socketId) {
+  for (let i = 0; i < allUsers.length; i++) {
+    rightColor = allUsers[i].color;
+
+    if (allUsers[i].id == socketId) {
       io.to(roomId).emit('coloredPiece', piece, rightColor, this.id);
     } else {
       console.log('ingen matchning');
@@ -149,6 +156,7 @@ const handleColoredPiece = async function (piece, roomId, socketId) {
 };
 
 let counter = 0;
+
 //hantera att en Klar-knapp är klickad
 const handleDonePlaying = (socketId, roomId) => {
   console.log('Socket:', socketId);
@@ -157,7 +165,7 @@ const handleDonePlaying = (socketId, roomId) => {
   counter++;
   console.log('Counter:', counter);
   if (counter == 2) {
-    console.log("hamnar i doneplaying, if-sats")
+    console.log("hamnar i doneplaying, if-sats");
     io.to(roomId).emit('donePlaying', 'done');
 
     counter = 0;
@@ -171,29 +179,29 @@ const handleDonePlaying = (socketId, roomId) => {
 
 // const handleSaveImg = async function (img, roomId) {
 //   console.log('img', img, roomId);
-  // const url = (process.env.MONGOATLAS);
-  // mongoose.connect(url)
-  
-  
-  // images.push(img);
-  // console.log("images", images.length);
-  // Här kan man jämföra med de bilderna vi har istället jag provade det 
-  // let count = 0;
+// const url = (process.env.MONGOATLAS);
+// mongoose.connect(url)
 
-  // images.forEach(el => {
-    // for (let i = 0; i < img; i++){
-    //   if (el.color == img[i].color) {
-    //     count++;
-    //     console.log('image is equal to img', count);
-    //     console.log(roomId);
-    //     io.to(roomId).emit('result', 'success');
-    //   }
-    //   else if (el.color == img[i].color) {
-    //     count--;
-    //     console.log('image is not equal to img ', count);
-    //     io.to(roomId).emit('result', 'fail');
-    //   }
-  // });
+
+// images.push(img);
+// console.log("images", images.length);
+// Här kan man jämföra med de bilderna vi har istället jag provade det 
+// let count = 0;
+
+// images.forEach(el => {
+// for (let i = 0; i < img; i++){
+//   if (el.color == img[i].color) {
+//     count++;
+//     console.log('image is equal to img', count);
+//     console.log(roomId);
+//     io.to(roomId).emit('result', 'success');
+//   }
+//   else if (el.color == img[i].color) {
+//     count--;
+//     console.log('image is not equal to img ', count);
+//     io.to(roomId).emit('result', 'fail');
+//   }
+// });
 // };
 
 //exporterar controllern
@@ -221,8 +229,8 @@ module.exports = function (socket, _io) {
   socket.on('coloredPiece', handleColoredPiece);
 
   //hanterar spelare som är "klara"
-  socket.on('donePlaying', handleDonePlaying); 
-  
+  socket.on('donePlaying', handleDonePlaying);
+
   // //hanterar spelare som är "klara"
   // socket.on('saveImg', handleSaveImg);
 };
