@@ -191,7 +191,6 @@ const Game = () => {
           console.log(facit);
         }
       });
-
     });
   };
 
