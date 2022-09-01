@@ -21,7 +21,7 @@ const Game = () => {
   const navigate = useNavigate();
   const messageRef = useRef();
 
- 
+
   const handleIncomingMessage = (msg) => {
     console.log('Received a new chat message', msg);
 
@@ -156,7 +156,7 @@ const Game = () => {
     return setYourDivs(yourDivBoxes);
   };
 
-  
+
 
   //event för klar knappen
   const donePlaying = () => {
@@ -178,7 +178,7 @@ const Game = () => {
 
       let eachDiv = { "id": gameboard.children[i].id, "color": gameboard.children[i].style.backgroundColor };
       if (eachDiv.color == "") {
-        eachDiv.color = "0";
+        eachDiv.color = "white";
         colorBoard.push(eachDiv);
       }
       else {
@@ -193,14 +193,14 @@ const Game = () => {
     // setSave(colorBoard);
     // console.log("SAVE", save[0]);
 
-    
+
     //  const postImg = async () => {
     //   const response = await axios.post("http://localhost:4000/img/save", colorBoard);
     //   console.log(response.data);
     // } 
 
 
-    axios.post("http://localhost:4000/img/save", { colorBoard, room_id}, {
+    axios.post("http://localhost:4000/img/save", { colorBoard, room_id }, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -209,8 +209,8 @@ const Game = () => {
       console.log(res);
     }).catch(err => {
       console.log(err);
-    })
-    
+    });
+
   };
 
   const saveImg = () => {

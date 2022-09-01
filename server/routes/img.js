@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
     }).catch(err => {
         res.send(err);
         console.log(err);
-    }); 
+    });
 });
 
 let counter = 0;
