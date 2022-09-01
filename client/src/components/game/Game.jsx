@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useChatContext } from '../../context/ChatContextProvider';
 // import { PostImgService } from '../../services/PostImgService';
 import './game.scss';
+
 import axios from "axios";
 import img1 from './6310a34fd91c31ad1a363a03.png';
 
@@ -338,6 +339,12 @@ const Game = () => {
     messageRef.current && messageRef.current.focus();
     generateYourDivs();
   }, []);
+  
+  useEffect(() => {
+		messageEndRef.current?.scrollIntoView({
+			behavior: 'smooth',
+		});
+	}, [messages]);
 
   // Ifall det inte sker en connection
   if (!connected) {
@@ -367,6 +374,7 @@ const Game = () => {
                 <span className="content">{message.content}</span>
               </li>
             ))}
+            <div classname='messageref' ref={messageEndRef} />
           </ul>
           <form onSubmit={handleSubmit}>
             <input ref={messageRef} required type="text" placeholder="Skicka meddelande" value={message} onChange={(e) => setMessage(e.target.value)} />
@@ -409,4 +417,3 @@ const Game = () => {
 
 
 export default Game;
-
