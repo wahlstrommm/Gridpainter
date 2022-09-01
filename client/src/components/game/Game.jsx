@@ -28,6 +28,9 @@ const Game = () => {
   const { room_id } = useParams();
   const navigate = useNavigate();
   const messageRef = useRef();
+
+  const [img1, setImg1] = useState({});
+
   // const effectRan = useRef(false);
 
   // useEffect(() => {
@@ -145,7 +148,7 @@ const Game = () => {
     };
   }, [socket, room_id, chatUsername, navigate, result]);
 
-
+  // let facit = [];
   // Service för att spara bild
   // useEffect(() => {
   //   // let service = new PostImgService();
@@ -170,7 +173,7 @@ const Game = () => {
     console.log('Click box nr ' + id, color, socketId);
     socket.emit('coloredPiece', id, room_id, socketId, true);
   };
-  let facit = [];
+
 
   const handleClickStart = () => {
     console.log("Start");
@@ -181,14 +184,18 @@ const Game = () => {
     axios.get("http://localhost:4000/img/imgs").then(res => {
       let imgsContainer = document.getElementById("imgsContainer");
       console.log(res.data);
-      res.data.forEach((img) => {
-        console.log(img._id);
-        if (img._id == rightPictures[0]) {
+      res.data.forEach((i) => {
+        console.log(i._id);
+        if (i._id == rightPictures[0]) {
           console.log(rightPictures[0]);
           console.log("Rätt bild");
-          console.log(img.img);
-          facit.push(img.img);
-          console.log(facit);
+          console.log(i);
+          // facit.push(i);
+          // console.log(typeof (facit));
+          console.log(typeof (i.img));
+          // console.log(facit);
+          setImg1(i.img);
+          console.log(img1);
         }
       });
     });
@@ -239,11 +246,11 @@ const Game = () => {
       }
 
     }
-    console.log("FACIT:", facit[0].img);
+    console.log("FACIT:", img1);
     console.log("COLORBOARD", colorBoard);
-    let res = facit[0];
+    // let res = img1.img;
     colorBoard.forEach((num1, index) => {
-      const num2 = res[index];
+      const num2 = img1[index];
       console.log("colorBoard::", num1.color, "Facit:", num2.color);
 
       if (num1.color == num2.color) {
@@ -253,58 +260,15 @@ const Game = () => {
       }
 
     });
-
-    // for(let j= 0)
-    //   // const element = facit[j];
-    //   console.log("Facit",facit[j]);
-    //   colorBoard.forEach(el => {
-    //     console.log(facit[j].color);
-    //     console.log(el.color);
-    //     if(facit[j].color == el.color){
-    //       console.log('match');
-    //       // return;
-    //     } else {
-    //       console.log('no match');
-    //       // return;
-    //     }
-    //   });
-    // }
-    // console.log(colorBoard[i].color);
-
-    // if (facit[j].color == colorBoard[i].color)
-    // colorBoard.forEach(el => {
-    //   console.log(el.color);
-    // if (element.color == el.color) {
-    //   count++;
-    // } else {
-    //   count--
-    // }
-    // })
-    // }
-    // }
+    
     console.log("COLORBOARD Utanför", colorBoard);
 
     setDone(true);
 
-    // let count = 0;
-    // for (let i = 0; i < facit.length; i++) {
-    //   const element = facit[i];
-    //   console.log(facit[i]);
-    //   console.log(colorBoard[i].color);
-
-
-    //   // colorBoard.forEach(el => {
-    //   //   console.log(el.color);
-    //     // if (element.color == el.color) {
-    //     //   count++;
-    //     // } else {
-    //     //   count--
-    //     // }
-    //   // })
-    // }
-    facit.forEach(function (item, index) {
-      console.log(item, colorBoard[index]);
-    });
+    
+    // facit.forEach(function (item, index) {
+    //   console.log(item, colorBoard[index]);
+    // });
 
     let players = Object.values(users);
     let date = new Date();
