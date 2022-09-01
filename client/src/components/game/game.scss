@@ -174,7 +174,11 @@
   div:nth-child(1) {
     height: 25%;
     width: 100%;
-    background-color: rgb(34, 88, 134);
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
   }
   div:nth-child(2) {
     text-align: center;

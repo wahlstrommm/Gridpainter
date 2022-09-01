@@ -4,6 +4,13 @@ import { useChatContext } from '../../context/ChatContextProvider';
 // import { PostImgService } from '../../services/PostImgService';
 import './game.scss';
 import axios from "axios";
+import img1 from './6310a34fd91c31ad1a363a03.png';
+
+// import 6310a34fd91c31ad1a363a03 from 
+// alla bilder i en array
+// for loop
+// if(monogDB_id == imgArray[i])
+// matchning = img.src
 
 const Game = () => {
   const [message, setMessage] = useState('');
@@ -14,12 +21,26 @@ const Game = () => {
   const [color, setColor] = useState('');
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
+  const [start, SetStart] = useState(false);
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
   const { room_id } = useParams();
   const navigate = useNavigate();
   const messageRef = useRef();
+  // const effectRan = useRef(false);
+
+  // useEffect(() => {
+  //    const getImgs = () => {
+  //     axios.get("http://localhost:4000/img/imgs").then(res => {
+  //       console.log(res.data);
+  //     })
+  //   }
+  //   return () => {
+  //     console.log("Game component unmount");
+  //     effectRan.current = true;
+  //   }
+  // },[])
 
 
   const handleIncomingMessage = (msg) => {
@@ -91,10 +112,11 @@ const Game = () => {
     socket.on('user:list', handleUpdateUsers);
 
     // Lyssnar på färgade rutor
-    socket.on('coloredPiece', (nr, color, socketId) => {
-      console.log(nr, color, socketId);
+    socket.on('coloredPiece', (nr, color, socketId, state) => {
+      console.log(nr, color, socketId, state);
 
       setColor(color);
+      SetStart(state);
       generateYourDivs(nr, color);
     });
 
@@ -138,8 +160,39 @@ const Game = () => {
 
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
+
+    if (start) {
+      SetStart(false);
+    } else {
+      SetStart(true);
+    }
+
     console.log('Click box nr ' + id, color, socketId);
-    socket.emit('coloredPiece', id, room_id, socketId);
+    socket.emit('coloredPiece', id, room_id, socketId, true);
+  };
+  let facit = [];
+
+  const handleClickStart = () => {
+    console.log("Start");
+    let rightPictures = [];
+
+    rightPictures.push('6310a34fd91c31ad1a363a03');
+    console.log(rightPictures);
+    axios.get("http://localhost:4000/img/imgs").then(res => {
+      let imgsContainer = document.getElementById("imgsContainer");
+      console.log(res.data);
+      res.data.forEach((img) => {
+        console.log(img._id);
+        if (img._id == rightPictures[0]) {
+          console.log(rightPictures[0]);
+          console.log("Rätt bild");
+          console.log(img.img);
+          facit.push(img.img);
+          console.log(facit);
+        }
+      });
+
+    });
   };
 
   const generateYourDivs = async (nr, color) => {
@@ -171,10 +224,11 @@ const Game = () => {
 
     let colorBoard = [];
 
-    // let gameImg = [];
+
+
     for (let i = 0; i < gameboard.children.length; i++) {
-      console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor);
-      console.log("Children:", gameboard.children[i].style);
+      // console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor);
+      // console.log("Children:", gameboard.children[i].style);
 
       let eachDiv = { "id": gameboard.children[i].id, "color": gameboard.children[i].style.backgroundColor };
       if (eachDiv.color == "") {
@@ -184,23 +238,80 @@ const Game = () => {
       else {
         colorBoard.push(eachDiv);
       }
+
     }
+    console.log("FACIT:", facit[0].img);
+    console.log("COLORBOARD", colorBoard);
+    let res = facit[0];
+    colorBoard.forEach((num1, index) => {
+      const num2 = res[index];
+      console.log("colorBoard::", num1.color, "Facit:", num2.color);
+
+      if (num1.color == num2.color) {
+        console.log("Rätt");
+      } else {
+        console.log("Fel");
+      }
+
+    });
+
+    // for(let j= 0)
+    //   // const element = facit[j];
+    //   console.log("Facit",facit[j]);
+    //   colorBoard.forEach(el => {
+    //     console.log(facit[j].color);
+    //     console.log(el.color);
+    //     if(facit[j].color == el.color){
+    //       console.log('match');
+    //       // return;
+    //     } else {
+    //       console.log('no match');
+    //       // return;
+    //     }
+    //   });
+    // }
+    // console.log(colorBoard[i].color);
+
+    // if (facit[j].color == colorBoard[i].color)
+    // colorBoard.forEach(el => {
+    //   console.log(el.color);
+    // if (element.color == el.color) {
+    //   count++;
+    // } else {
+    //   count--
+    // }
+    // })
+    // }
+    // }
     console.log("COLORBOARD Utanför", colorBoard);
 
     setDone(true);
-    // socket.emit('saveImg', colorBoard, room_id);
 
-    // setSave(colorBoard);
-    // console.log("SAVE", save[0]);
-
-
-    //  const postImg = async () => {
-    //   const response = await axios.post("http://localhost:4000/img/save", colorBoard);
-    //   console.log(response.data);
-    // } 
+    // let count = 0;
+    // for (let i = 0; i < facit.length; i++) {
+    //   const element = facit[i];
+    //   console.log(facit[i]);
+    //   console.log(colorBoard[i].color);
 
 
-    axios.post("http://localhost:4000/img/save", { colorBoard, room_id }, {
+    //   // colorBoard.forEach(el => {
+    //   //   console.log(el.color);
+    //     // if (element.color == el.color) {
+    //     //   count++;
+    //     // } else {
+    //     //   count--
+    //     // }
+    //   // })
+    // }
+    facit.forEach(function (item, index) {
+      console.log(item, colorBoard[index]);
+    });
+
+    let players = Object.values(users);
+    let date = new Date();
+    let dateString = date.toLocaleString();
+    console.log("USER", players);
+    axios.post("http://localhost:4000/img/save", { colorBoard, room_id, players, dateString }, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -211,7 +322,12 @@ const Game = () => {
       console.log(err);
     });
 
+
+
   };
+
+
+
 
   const saveImg = () => {
     // console.log("saveImag");
@@ -279,15 +395,19 @@ const Game = () => {
       </div>
 
       <div className="leftWrapper">
-        <div>
-          <img src="" alt="computer" />
+        <div id='imgsContainer'>
+          <img src={img1} alt='img1' />
         </div>
         <div>Tid: 276sek</div>
         <button id="btnDone" disabled={done} onClick={donePlaying}>Klar</button>
+        <button id='' disabled={start} onClick={handleClickStart}>Måla av </button>
       </div>
+
     </div>
   );
 };
+
+
 
 export default Game;
 

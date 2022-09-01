@@ -20,6 +20,9 @@ const Gallery = () => {
               let parent = document.getElementById("parent");
 
               let gridContainer = document.createElement("div");
+              let imgInfo = document.createElement("div");
+              imgInfo.className = "imgInfo";
+              imgInfo.innerText = `Spelare: ${res.data[i].players} ${res.data[i].date} ${res.data[i].roomId}`;
               gridContainer.className = "gridContainer";
               res.data[i].img.forEach(el => {
                 let grid = document.createElement('div');
@@ -27,8 +30,9 @@ const Gallery = () => {
                 grid.className = "eachGridbox";
                 grid.style.backgroundColor = el.color;
                 gridContainer.append(grid);
+
               });
-              parent.append(gridContainer);
+              parent.append(gridContainer, imgInfo);
             }
           });
       };

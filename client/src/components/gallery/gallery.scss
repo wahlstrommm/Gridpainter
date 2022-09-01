@@ -2,7 +2,7 @@ section {
   width: 100vw;
   min-height: 100vh;
   max-height: fit-content;
-  
+
   .parentGallery {
     border: none;
     display: flex;
@@ -29,6 +29,10 @@ section {
         height: 30px;
         border: 1px solid black;
       }
+    }
+    .imgInfo {
+      margin: 10px;
+      color: aliceblue;
     }
   }
 
