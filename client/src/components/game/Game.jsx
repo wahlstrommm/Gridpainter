@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useChatContext } from "../../context/ChatContextProvider";
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useChatContext } from '../../context/ChatContextProvider';
 // import { PostImgService } from '../../services/PostImgService';
-import "./game.scss";
-import axios from "axios";
+import './game.scss';
+import axios from 'axios';
 
 const Game = () => {
-	const [message, setMessage] = useState("");
-	const [result, setResult] = useState("");
+	const [message, setMessage] = useState('');
+	const [result, setResult] = useState('');
 	const [messages, setMessages] = useState([]);
 	const [users, setUsers] = useState([]);
 	const [connected, setConnected] = useState(false);
-	const [color, setColor] = useState("");
+	const [color, setColor] = useState('');
 	const [done, setDone] = useState(false);
 	const [allDone, setAllDone] = useState(false);
 	//grid
@@ -23,14 +23,14 @@ const Game = () => {
 	const messageEndRef = useRef(null);
 
 	const handleIncomingMessage = (msg) => {
-		console.log("Received a new chat message", msg);
+		console.log('Received a new chat message', msg);
 
 		// lägger till meddelande i chatt
 		setMessages((prevMessages) => [...prevMessages, msg]);
 	};
 
 	const handleUpdateUsers = (userlist, userObject) => {
-		console.log("Got new userlist", userObject);
+		console.log('Got new userlist', userObject);
 		setColor(userObject.color);
 
 		setUsers(userlist);
@@ -57,13 +57,13 @@ const Game = () => {
 		};
 
 		// emittar meddelande
-		socket.emit("chat:message", msg);
+		socket.emit('chat:message', msg);
 
 		// lägger till meddelande i chatt
 		setMessages((prevMessages) => [...prevMessages, { ...msg, self: true }]);
 
 		//tömmer input och lägger fokus på input igen
-		setMessage("");
+		setMessage('');
 		messageRef.current.focus();
 	};
 
@@ -71,55 +71,55 @@ const Game = () => {
 	useEffect(() => {
 		// Inget användarnamn = redirect till home
 		if (!chatUsername) {
-			navigate("/");
+			navigate('/');
 			return;
 		}
 
 		// emittar join request
-		socket.emit("user:joined", chatUsername, room_id, (status) => {
+		socket.emit('user:joined', chatUsername, room_id, (status) => {
 			// console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
 
 			setConnected(true);
 		});
 
-		socket.on("roomAvailability", handleRoomStatus);
+		socket.on('roomAvailability', handleRoomStatus);
 
 		// Lyssnar efter meddelanden
-		socket.on("chat:message", handleIncomingMessage);
+		socket.on('chat:message', handleIncomingMessage);
 
 		// Lyssnar efter en uppdaterad användarlista
-		socket.on("user:list", handleUpdateUsers);
+		socket.on('user:list', handleUpdateUsers);
 
 		// Lyssnar på färgade rutor
-		socket.on("coloredPiece", (nr, color, socketId) => {
+		socket.on('coloredPiece', (nr, color, socketId) => {
 			console.log(nr, color, socketId);
 
 			setColor(color);
 			generateYourDivs(nr, color);
 		});
 
-		socket.on("donePlaying", (text) => {
+		socket.on('donePlaying', (text) => {
 			console.log(text);
 
-			if (text == "done") {
+			if (text == 'done') {
 				setAllDone(true);
 			}
 		});
 
-		socket.on("result", (result) => {
+		socket.on('result', (result) => {
 			console.log(result);
 			setResult(result);
 		});
 
 		return () => {
 			// Slutar lyssna
-			socket.off("chat:message", handleIncomingMessage);
-			socket.off("roomAvailability", handleRoomStatus);
-			socket.off("user:list", handleUpdateUsers);
-			socket.off("coloredPiece");
-			socket.off("result");
-			socket.off("user:joined");
-			socket.emit("user:left", chatUsername, room_id);
+			socket.off('chat:message', handleIncomingMessage);
+			socket.off('roomAvailability', handleRoomStatus);
+			socket.off('user:list', handleUpdateUsers);
+			socket.off('coloredPiece');
+			socket.off('result');
+			socket.off('user:joined');
+			socket.emit('user:left', chatUsername, room_id);
 		};
 	}, [socket, room_id, chatUsername, navigate, result]);
 
@@ -137,8 +137,8 @@ const Game = () => {
 
 	// hantera klick på en ruta i griden
 	const handleBoxClick = (id, socketId) => {
-		console.log("Click box nr " + id, color, socketId);
-		socket.emit("coloredPiece", id, room_id, socketId);
+		console.log('Click box nr ' + id, color, socketId);
+		socket.emit('coloredPiece', id, room_id, socketId);
 	};
 
 	const generateYourDivs = async (nr, color) => {
@@ -155,7 +155,7 @@ const Game = () => {
 			);
 
 			if (nr == i) {
-				document.getElementById("box" + i).style.background = color;
+				document.getElementById('box' + i).style.background = color;
 			}
 		}
 
@@ -167,36 +167,36 @@ const Game = () => {
 		//id, boolean
 		console.log(socket.id);
 		//IF SocketID + Color etc.
-		socket.emit("donePlaying", socket.id, room_id);
+		socket.emit('donePlaying', socket.id, room_id);
 		// children till YourDivs?
 		console.log(yourDivs);
 
-		let gameboard = document.getElementById("gameboard");
+		let gameboard = document.getElementById('gameboard');
 
 		let colorBoard = [];
 
 		// let gameImg = [];
 		for (let i = 0; i < gameboard.children.length; i++) {
 			console.log(
-				"Children:",
+				'Children:',
 				gameboard.children[i].id,
-				" är ",
+				' är ',
 				gameboard.children[i].style.backgroundColor
 			);
-			console.log("Children:", gameboard.children[i].style);
+			console.log('Children:', gameboard.children[i].style);
 
 			let eachDiv = {
 				id: gameboard.children[i].id,
 				color: gameboard.children[i].style.backgroundColor,
 			};
-			if (eachDiv.color == "") {
-				eachDiv.color = "0";
+			if (eachDiv.color == '') {
+				eachDiv.color = '0';
 				colorBoard.push(eachDiv);
 			} else {
 				colorBoard.push(eachDiv);
 			}
 		}
-		console.log("COLORBOARD Utanför", colorBoard);
+		console.log('COLORBOARD Utanför', colorBoard);
 
 		setDone(true);
 		// socket.emit('saveImg', colorBoard, room_id);
@@ -211,16 +211,16 @@ const Game = () => {
 
 		axios
 			.post(
-				"http://localhost:4000/img/save",
+				'http://localhost:4000/img/save',
 				{ colorBoard, room_id },
 				{
 					headers: {
-						"Content-Type": "application/json",
+						'Content-Type': 'application/json',
 					},
 				}
 			)
 			.then((res) => {
-				console.log("Hej från axios, save img", res);
+				console.log('Hej från axios, save img', res);
 				console.log(res);
 			})
 			.catch((err) => {
@@ -241,7 +241,7 @@ const Game = () => {
 
 	useEffect(() => {
 		messageEndRef.current?.scrollIntoView({
-			behavior: "smooth",
+			behavior: 'smooth',
 		});
 	}, [messages]);
 
@@ -294,7 +294,7 @@ const Game = () => {
 			<div className='parent' id='gameboard'>
 				{yourDivs}
 			</div>
-			<div id='resultboard' style={{ display: allDone ? "block" : "none" }}>
+			<div id='resultboard' style={{ display: allDone ? 'block' : 'none' }}>
 				<div className='containerResult'>
 					<h2>Resultat</h2>
 					<h3>{result}</h3>
