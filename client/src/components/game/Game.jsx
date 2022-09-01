@@ -23,6 +23,7 @@ const Game = () => {
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
   const [start, SetStart] = useState(false);
+  const [pointsCounter, setPointsCounter] = useState(1);
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -132,10 +133,10 @@ const Game = () => {
       }
     });
 
-    socket.on('result', (result) => {
-      console.log(result);
-      setResult(result);
-    });
+    // socket.on('result', (result) => {
+    //   console.log(result);
+    //   setResult(result);
+    // });
 
     return () => {
       // Slutar lyssna
@@ -143,7 +144,7 @@ const Game = () => {
       socket.off('roomAvailability', handleRoomStatus);
       socket.off('user:list', handleUpdateUsers);
       socket.off('coloredPiece');
-      socket.off('result');
+      // socket.off('result');
       socket.off('user:joined');
       socket.emit('user:left', chatUsername, room_id);
     };
@@ -162,6 +163,31 @@ const Game = () => {
   //   })
   // }, [save]);
 
+
+  // let startCounting = 0;
+
+  // // timer som räknar upp sekunder
+  // const gameTime = () => {
+  //   setInterval(() => {
+  //     ++startCounting;
+
+  //     let hour = Math.floor(startCounting / 3600);
+  //     let minute = Math.floor(startCounting - hour*3600)/60;
+  //     let seconds = startCounting - (hour*3600 + minute*60)
+
+  //     if (hour < 10) {
+  //       hour = "0"+hour;
+  //     } 
+  //     if (minute < 10) {
+  //       minute = "0"+minute;
+  //     }
+  //     if (seconds < 10) {
+  //       seconds = "0"+seconds;
+  //     }
+  //     setResult(startCounting);
+  //   }, 1000);
+  // };
+
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
 
@@ -178,13 +204,18 @@ const Game = () => {
 
   const handleClickStart = () => {
     console.log("Start");
+
+    // gameTime();
+
     let rightPictures = [];
 
     rightPictures.push('6310a34fd91c31ad1a363a03');
     console.log(rightPictures);
+
     axios.get("http://localhost:4000/img/imgs").then(res => {
       let imgsContainer = document.getElementById("imgsContainer");
       console.log(res.data);
+      
       res.data.forEach((i) => {
         console.log(i._id);
         if (i._id == rightPictures[0]) {
@@ -216,8 +247,6 @@ const Game = () => {
     return setYourDivs(yourDivBoxes);
   };
 
-
-
   //event för klar knappen
   const donePlaying = () => {
     //id, boolean
@@ -228,10 +257,7 @@ const Game = () => {
     console.log(yourDivs);
 
     let gameboard = document.getElementById("gameboard");
-
     let colorBoard = [];
-
-
 
     for (let i = 0; i < gameboard.children.length; i++) {
       // console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor);
@@ -247,25 +273,35 @@ const Game = () => {
       }
 
     }
+
     console.log("FACIT:", img1);
     console.log("COLORBOARD", colorBoard);
     // let res = img1.img;
+
+    let counter = 0;
+
     colorBoard.forEach((num1, index) => {
       const num2 = img1[index];
-      console.log("colorBoard::", num1.color, "Facit:", num2.color);
+      console.log("colorBoard:", num1.color, "Facit:", num2.color);
 
       if (num1.color == num2.color) {
-        console.log("Rätt");
+        counter++
+        console.log("Rätt", counter);
+
+        let percent = (counter / 225) * 100;
+        console.log(percent);
+
+        setPointsCounter(Math.round(percent));
       } else {
         console.log("Fel");
       }
 
+      console.log(pointsCounter);
     });
     
     console.log("COLORBOARD Utanför", colorBoard);
 
     setDone(true);
-
     
     // facit.forEach(function (item, index) {
     //   console.log(item, colorBoard[index]);
@@ -285,18 +321,12 @@ const Game = () => {
     }).catch(err => {
       console.log(err);
     });
-
-
-
   };
 
-
-
-
-  const saveImg = () => {
-    // console.log("saveImag");
-    console.log(result);
-  };
+  // const saveImg = () => {
+  //   // console.log("saveImag");
+  //   console.log(result);
+  // };
 
   useEffect(() => {
     //fokus på message input
@@ -357,8 +387,8 @@ const Game = () => {
         <div className='containerResult'>
           <h2>Resultat</h2>
           <h3>{result}</h3>
-          {/* <h3>100% rätt</h3> */}
-          <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button>
+          <h3>{pointsCounter}% rätt</h3>
+          {/* <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button> */}
           <button className="resultBtn">
             <Link to="/">Spela igen</Link>
           </button>
@@ -369,8 +399,9 @@ const Game = () => {
         <div id='imgsContainer'>
           <img src={img1} alt='img1' />
         </div>
-        <div>Tid: 276sek</div>
+        <h3>{result}</h3>
         <button id="btnDone" disabled={done} onClick={donePlaying}>Klar</button>
+        {/* <button id="btnDone" disabled={done} onClick={function(){donePlaying(); clearInterval(gameTime)}}>Klar</button> */}
         <button id='' disabled={start} onClick={handleClickStart}>Måla av </button>
       </div>
 
