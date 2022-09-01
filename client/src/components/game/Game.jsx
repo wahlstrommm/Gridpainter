@@ -304,11 +304,11 @@ const Game = () => {
     generateYourDivs();
   }, []);
   
-  useEffect(() => {
-		messageEndRef.current?.scrollIntoView({
-			behavior: 'smooth',
-		});
-	}, [messages]);
+  // useEffect(() => {
+	// 	messageEndRef.current?.scrollIntoView({
+	// 		behavior: 'smooth',
+	// 	});
+	// }, [messages]);
 
   // Ifall det inte sker en connection
   if (!connected) {
@@ -338,7 +338,7 @@ const Game = () => {
                 <span className="content">{message.content}</span>
               </li>
             ))}
-            <div classname='messageref' ref={messageEndRef} />
+            {/* <div classname='messageref' ref={messageEndRef} /> */}
           </ul>
           <form onSubmit={handleSubmit}>
             <input ref={messageRef} required type="text" placeholder="Skicka meddelande" value={message} onChange={(e) => setMessage(e.target.value)} />
