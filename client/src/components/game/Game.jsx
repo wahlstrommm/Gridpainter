@@ -147,7 +147,7 @@ const Game = () => {
 		for (let i = 1; i < 226; i++) {
 			yourDivBoxes.push(
 				<div
-					className="gridBox"
+					className='gridBox'
 					key={[i]}
 					id={`box${i}`}
 					onClick={() => handleBoxClick(i, socket.id)}
@@ -251,15 +251,15 @@ const Game = () => {
 	}
 
 	return (
-		<div id="Wrapper">
-			<div id="chat">
+		<div id='Wrapper'>
+			<div id='chat'>
 				<div>
 					<h2>Game and chatt {room_id}</h2>
 					<h3>Users</h3>
 					<ul>
 						{Object.values(users).map((user, index) => (
 							<li key={index}>
-								<span className="user-icon">🧑</span> {user}
+								<span className='user-icon'>🧑</span> {user}
 							</li>
 						))}
 					</ul>
@@ -269,51 +269,51 @@ const Game = () => {
 					<ul>
 						{messages.map((message, i) => (
 							<li key={i}>
-								<span className="user">{message.username}: </span>
-								<span className="content">{message.content}</span>
+								<span className='user'>{message.username}: </span>
+								<span className='content'>{message.content}</span>
 							</li>
 						))}
-						<div classname="messageref" ref={messageEndRef} />
+						<div classname='messageref' ref={messageEndRef} />
 					</ul>
 					<form onSubmit={handleSubmit}>
 						<input
 							ref={messageRef}
 							required
-							type="text"
-							placeholder="Skicka meddelande"
+							type='text'
+							placeholder='Skicka meddelande'
 							value={message}
 							onChange={(e) => setMessage(e.target.value)}
 						/>
-						<button type="submit" id="submit">
+						<button type='submit' id='submit'>
 							Skicka
 						</button>
 					</form>
 				</div>
 			</div>
 
-			<div className="parent" id="gameboard">
+			<div className='parent' id='gameboard'>
 				{yourDivs}
 			</div>
-			<div id="resultboard" style={{ display: allDone ? "block" : "none" }}>
-				<div className="containerResult">
+			<div id='resultboard' style={{ display: allDone ? "block" : "none" }}>
+				<div className='containerResult'>
 					<h2>Resultat</h2>
 					<h3>{result}</h3>
 					{/* <h3>100% rätt</h3> */}
-					<button className="resultBtn" onClick={saveImg}>
+					<button className='resultBtn' onClick={saveImg}>
 						Ladda ner bild
 					</button>
-					<button className="resultBtn">
-						<Link to="/">Spela igen</Link>
+					<button className='resultBtn'>
+						<Link to='/'>Spela igen</Link>
 					</button>
 				</div>
 			</div>
 
-			<div className="leftWrapper">
+			<div className='leftWrapper'>
 				<div>
-					<img src="" alt="computer" />
+					<img src='' alt='computer' />
 				</div>
 				<div>Tid: 276sek</div>
-				<button id="btnDone" disabled={done} onClick={donePlaying}>
+				<button id='btnDone' disabled={done} onClick={donePlaying}>
 					Klar
 				</button>
 			</div>
