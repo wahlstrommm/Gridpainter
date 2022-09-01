@@ -13,16 +13,14 @@ const socket_controller = require("./controllers/socket_controller");
 
 const MongoClient = require("mongodb").MongoClient;
 
-
 const uri = process.env.MONGOATLAS;
 MongoClient.connect(uri, {
-  useUnifiedTopology: true
-}).then(client => {
-  console.log("Connected to MongoDB Atlas!");
-    const db= client.db("Gallery");
-    app.locals.db = db;
-  });
-
+	useUnifiedTopology: true,
+}).then((client) => {
+	console.log("Connected to MongoDB Atlas!");
+	const db = client.db("Gallery");
+	app.locals.db = db;
+});
 
 /**
  * Get port from environment.
@@ -34,17 +32,17 @@ const port = process.env.PORT || "3000";
  */
 const server = http.createServer(app);
 const io = new socketio.Server(server, {
-  cors: {
-    origin: "*",
-    credentials: true,
-  },
+	cors: {
+		origin: "*",
+		credentials: true,
+	},
 });
 
 /**
  * Handle incoming connections
  */
 io.on("connection", (socket) => {
-  socket_controller(socket, io);
+	socket_controller(socket, io);
 });
 
 /**
@@ -58,27 +56,27 @@ server.on("listening", onListening);
  * Event listener for HTTP server "error" event.
  */
 function onError(error) {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
+	if (error.syscall !== "listen") {
+		throw error;
+	}
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case "EADDRINUSE":
-      console.error(`Port ${port} is already in use`);
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+	// handle specific listen errors with friendly messages
+	switch (error.code) {
+		case "EADDRINUSE":
+			console.error(`Port ${port} is already in use`);
+			process.exit(1);
+			break;
+		default:
+			throw error;
+	}
 }
 
 /**
  * Event listener for HTTP server "listening" event.
  */
 function onListening() {
-  const addr = server.address();
-  console.log(`Listening on port ${addr.port}`);
+	const addr = server.address();
+	console.log(`Listening on port ${addr.port}`);
 }
 
 app.use(express.json());
@@ -90,8 +88,7 @@ app.use("/gallery", galleryRouter);
 app.use("/img", imgRouter);
 
 app.get("/", (req, res) => {
-  res.send('welcome to app');
+	res.send("welcome to app");
 });
-
 
 module.exports = app;
