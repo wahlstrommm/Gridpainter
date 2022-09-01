@@ -148,7 +148,7 @@ const handleColoredPiece = async function (piece, roomId, socketId) {
     rightColor = allUsers[i].color;
 
     if (allUsers[i].id == socketId) {
-      io.to(roomId).emit('coloredPiece', piece, rightColor, this.id);
+      io.to(roomId).emit('coloredPiece', piece, rightColor, this.id, true);
     } else {
       console.log('ingen matchning');
     }
@@ -175,7 +175,7 @@ const handleDonePlaying = (socketId, roomId) => {
 };
 
 //hanterar att spara en bild
-// let images = [[], [], []];
+// let images = [[]];
 
 // const handleSaveImg = async function (img, roomId) {
 //   console.log('img', img, roomId);

@@ -1,25 +1,46 @@
 section {
-  display: flex;
   width: 100vw;
   min-height: 100vh;
   max-height: fit-content;
 
-  div {
-    width: 100%;
-    height: 100%;
+  .parentGallery {
+    border: none;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 1em;
-    padding: 1em;
+
+    .gridContainer {
+      margin: 8px;
+      display: grid;
+
+      grid-template-columns: repeat(15, 1fr);
+
+      grid-template-rows: repeat(15, 1fr);
+
+      grid-column-gap: 0px;
+
+      grid-row-gap: 0px;
+      width: 500px;
+      height: 500px;
+
+      .eachGridbox {
+        width: 30px;
+        height: 30px;
+        border: 1px solid black;
+      }
+    }
+    .imgInfo {
+      margin: 10px;
+      color: aliceblue;
+    }
   }
 
   .startBtn {
     background-color: #16447a;
     border: none;
     margin-bottom: 1em;
-    
+    margin-top: 10px;
     a {
       border-radius: 8px;
       background-color: #0b294e;

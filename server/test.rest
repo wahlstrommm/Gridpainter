@@ -12,3 +12,916 @@ GET http://localhost:4000/img
 
 
 ###
+
+GET http://localhost:4000/img/imgs
+###
+
+POST http://localhost:4000/img
+Content-Type: application/json
+
+{   
+    [
+        {
+            "id": "box1",
+            "color": "white"
+        },
+        {
+            "id": "box2",
+            "color": "white"
+        },
+        {
+            "id": "box3",
+            "color": "white"
+        },
+        {
+            "id": "box4",
+            "color": "white"
+        },
+        {
+            "id": "box5",
+            "color": "white"
+        },
+        {
+            "id": "box6",
+            "color": "white"
+        },
+        {
+            "id": "box7",
+            "color": "white"
+        },
+        {
+            "id": "box8",
+            "color": "white"
+        },
+        {
+            "id": "box9",
+            "color": "white"
+        },
+        {
+            "id": "box10",
+            "color": "white"
+        },
+        {
+            "id": "box11",
+            "color": "white"
+        },
+        {
+            "id": "box12",
+            "color": "white"
+        },
+        {
+            "id": "box13",
+            "color": "white"
+        },
+        {
+            "id": "box14",
+            "color": "white"
+        },
+        {
+            "id": "box15",
+            "color": "white"
+        },
+        {
+            "id": "box16",
+            "color": "white"
+        },
+        {
+            "id": "box17",
+            "color": "white"
+        },
+        {
+            "id": "box18",
+            "color": "white"
+        },
+        {
+            "id": "box19",
+            "color": "white"
+        },
+        {
+            "id": "box20",
+            "color": "white"
+        },
+        {
+            "id": "box21",
+            "color": "white"
+        },
+        {
+            "id": "box22",
+            "color": "red"
+        },
+        {
+            "id": "box23",
+            "color": "red"
+        },
+        {
+            "id": "box24",
+            "color": "red"
+        },
+        {
+            "id": "box25",
+            "color": "white"
+        },
+        {
+            "id": "box26",
+            "color": "white"
+        },
+        {
+            "id": "box27",
+            "color": "white"
+        },
+        {
+            "id": "box28",
+            "color": "white"
+        },
+        {
+            "id": "box29",
+            "color": "white"
+        },
+        {
+            "id": "box30",
+            "color": "white"
+        },
+        {
+            "id": "box31",
+            "color": "white"
+        },
+        {
+            "id": "box32",
+            "color": "white"
+        },
+        {
+            "id": "box33",
+            "color": "white"
+        },
+        {
+            "id": "box34",
+            "color": "white"
+        },
+        {
+            "id": "box35",
+            "color": "white"
+        },
+        {
+            "id": "box36",
+            "color": "white"
+        },
+        {
+            "id": "box37",
+            "color": "blue"
+        },
+        {
+            "id": "box38",
+            "color": "blue"
+        },
+        {
+            "id": "box39",
+            "color": "blue"
+        },
+        {
+            "id": "box40",
+            "color": "white"
+        },
+        {
+            "id": "box41",
+            "color": "white"
+        },
+        {
+            "id": "box42",
+            "color": "white"
+        },
+        {
+            "id": "box43",
+            "color": "white"
+        },
+        {
+            "id": "box44",
+            "color": "white"
+        },
+        {
+            "id": "box45",
+            "color": "white"
+        },
+        {
+            "id": "box46",
+            "color": "white"
+        },
+        {
+            "id": "box47",
+            "color": "white"
+        },
+        {
+            "id": "box48",
+            "color": "white"
+        },
+        {
+            "id": "box49",
+            "color": "white"
+        },
+        {
+            "id": "box50",
+            "color": "white"
+        },
+        {
+            "id": "box51",
+            "color": "white"
+        },
+        {
+            "id": "box52",
+            "color": "white"
+        },
+        {
+            "id": "box53",
+            "color": "white"
+        },
+        {
+            "id": "box54",
+            "color": "white"
+        },
+        {
+            "id": "box55",
+            "color": "white"
+        },
+        {
+            "id": "box56",
+            "color": "white"
+        },
+        {
+            "id": "box57",
+            "color": "white"
+        },
+        {
+            "id": "box58",
+            "color": "white"
+        },
+        {
+            "id": "box59",
+            "color": "white"
+        },
+        {
+            "id": "box60",
+            "color": "white"
+        },
+        {
+            "id": "box61",
+            "color": "white"
+        },
+        {
+            "id": "box62",
+            "color": "white"
+        },
+        {
+            "id": "box63",
+            "color": "white"
+        },
+        {
+            "id": "box64",
+            "color": "white"
+        },
+        {
+            "id": "box65",
+            "color": "white"
+        },
+        {
+            "id": "box66",
+            "color": "white"
+        },
+        {
+            "id": "box67",
+            "color": "white"
+        },
+        {
+            "id": "box68",
+            "color": "white"
+        },
+        {
+            "id": "box69",
+            "color": "white"
+        },
+        {
+            "id": "box70",
+            "color": "white"
+        },
+        {
+            "id": "box71",
+            "color": "white"
+        },
+        {
+            "id": "box72",
+            "color": "white"
+        },
+        {
+            "id": "box73",
+            "color": "white"
+        },
+        {
+            "id": "box74",
+            "color": "white"
+        },
+        {
+            "id": "box75",
+            "color": "white"
+        },
+        {
+            "id": "box76",
+            "color": "white"
+        },
+        {
+            "id": "box77",
+            "color": "white"
+        },
+        {
+            "id": "box78",
+            "color": "white"
+        },
+        {
+            "id": "box79",
+            "color": "white"
+        },
+        {
+            "id": "box80",
+            "color": "white"
+        },
+        {
+            "id": "box81",
+            "color": "white"
+        },
+        {
+            "id": "box82",
+            "color": "white"
+        },
+        {
+            "id": "box83",
+            "color": "white"
+        },
+        {
+            "id": "box84",
+            "color": "white"
+        },
+        {
+            "id": "box85",
+            "color": "white"
+        },
+        {
+            "id": "box86",
+            "color": "white"
+        },
+        {
+            "id": "box87",
+            "color": "white"
+        },
+        {
+            "id": "box88",
+            "color": "white"
+        },
+        {
+            "id": "box89",
+            "color": "white"
+        },
+        {
+            "id": "box90",
+            "color": "white"
+        },
+        {
+            "id": "box91",
+            "color": "white"
+        },
+        {
+            "id": "box92",
+            "color": "white"
+        },
+        {
+            "id": "box93",
+            "color": "white"
+        },
+        {
+            "id": "box94",
+            "color": "white"
+        },
+        {
+            "id": "box95",
+            "color": "white"
+        },
+        {
+            "id": "box96",
+            "color": "white"
+        },
+        {
+            "id": "box97",
+            "color": "white"
+        },
+        {
+            "id": "box98",
+            "color": "white"
+        },
+        {
+            "id": "box99",
+            "color": "white"
+        },
+        {
+            "id": "box100",
+            "color": "white"
+        },
+        {
+            "id": "box101",
+            "color": "white"
+        },
+        {
+            "id": "box102",
+            "color": "white"
+        },
+        {
+            "id": "box103",
+            "color": "white"
+        },
+        {
+            "id": "box104",
+            "color": "white"
+        },
+        {
+            "id": "box105",
+            "color": "white"
+        },
+        {
+            "id": "box106",
+            "color": "white"
+        },
+        {
+            "id": "box107",
+            "color": "white"
+        },
+        {
+            "id": "box108",
+            "color": "white"
+        },
+        {
+            "id": "box109",
+            "color": "white"
+        },
+        {
+            "id": "box110",
+            "color": "white"
+        },
+        {
+            "id": "box111",
+            "color": "white"
+        },
+        {
+            "id": "box112",
+            "color": "white"
+        },
+        {
+            "id": "box113",
+            "color": "white"
+        },
+        {
+            "id": "box114",
+            "color": "white"
+        },
+        {
+            "id": "box115",
+            "color": "white"
+        },
+        {
+            "id": "box116",
+            "color": "white"
+        },
+        {
+            "id": "box117",
+            "color": "white"
+        },
+        {
+            "id": "box118",
+            "color": "white"
+        },
+        {
+            "id": "box119",
+            "color": "white"
+        },
+        {
+            "id": "box120",
+            "color": "white"
+        },
+        {
+            "id": "box121",
+            "color": "white"
+        },
+        {
+            "id": "box122",
+            "color": "white"
+        },
+        {
+            "id": "box123",
+            "color": "white"
+        },
+        {
+            "id": "box124",
+            "color": "white"
+        },
+        {
+            "id": "box125",
+            "color": "white"
+        },
+        {
+            "id": "box126",
+            "color": "white"
+        },
+        {
+            "id": "box127",
+            "color": "white"
+        },
+        {
+            "id": "box128",
+            "color": "white"
+        },
+        {
+            "id": "box129",
+            "color": "white"
+        },
+        {
+            "id": "box130",
+            "color": "white"
+        },
+        {
+            "id": "box131",
+            "color": "white"
+        },
+        {
+            "id": "box132",
+            "color": "white"
+        },
+        {
+            "id": "box133",
+            "color": "white"
+        },
+        {
+            "id": "box134",
+            "color": "white"
+        },
+        {
+            "id": "box135",
+            "color": "white"
+        },
+        {
+            "id": "box136",
+            "color": "white"
+        },
+        {
+            "id": "box137",
+            "color": "white"
+        },
+        {
+            "id": "box138",
+            "color": "white"
+        },
+        {
+            "id": "box139",
+            "color": "white"
+        },
+        {
+            "id": "box140",
+            "color": "white"
+        },
+        {
+            "id": "box141",
+            "color": "white"
+        },
+        {
+            "id": "box142",
+            "color": "white"
+        },
+        {
+            "id": "box143",
+            "color": "white"
+        },
+        {
+            "id": "box144",
+            "color": "white"
+        },
+        {
+            "id": "box145",
+            "color": "white"
+        },
+        {
+            "id": "box146",
+            "color": "white"
+        },
+        {
+            "id": "box147",
+            "color": "white"
+        },
+        {
+            "id": "box148",
+            "color": "white"
+        },
+        {
+            "id": "box149",
+            "color": "white"
+        },
+        {
+            "id": "box150",
+            "color": "white"
+        },
+        {
+            "id": "box151",
+            "color": "white"
+        },
+        {
+            "id": "box152",
+            "color": "white"
+        },
+        {
+            "id": "box153",
+            "color": "white"
+        },
+        {
+            "id": "box154",
+            "color": "white"
+        },
+        {
+            "id": "box155",
+            "color": "white"
+        },
+        {
+            "id": "box156",
+            "color": "white"
+        },
+        {
+            "id": "box157",
+            "color": "white"
+        },
+        {
+            "id": "box158",
+            "color": "white"
+        },
+        {
+            "id": "box159",
+            "color": "white"
+        },
+        {
+            "id": "box160",
+            "color": "white"
+        },
+        {
+            "id": "box161",
+            "color": "white"
+        },
+        {
+            "id": "box162",
+            "color": "white"
+        },
+        {
+            "id": "box163",
+            "color": "white"
+        },
+        {
+            "id": "box164",
+            "color": "white"
+        },
+        {
+            "id": "box165",
+            "color": "white"
+        },
+        {
+            "id": "box166",
+            "color": "white"
+        },
+        {
+            "id": "box167",
+            "color": "white"
+        },
+        {
+            "id": "box168",
+            "color": "white"
+        },
+        {
+            "id": "box169",
+            "color": "white"
+        },
+        {
+            "id": "box170",
+            "color": "white"
+        },
+        {
+            "id": "box171",
+            "color": "white"
+        },
+        {
+            "id": "box172",
+            "color": "white"
+        },
+        {
+            "id": "box173",
+            "color": "white"
+        },
+        {
+            "id": "box174",
+            "color": "white"
+        },
+        {
+            "id": "box175",
+            "color": "white"
+        },
+        {
+            "id": "box176",
+            "color": "white"
+        },
+        {
+            "id": "box177",
+            "color": "white"
+        },
+        {
+            "id": "box178",
+            "color": "white"
+        },
+        {
+            "id": "box179",
+            "color": "white"
+        },
+        {
+            "id": "box180",
+            "color": "white"
+        },
+        {
+            "id": "box181",
+            "color": "white"
+        },
+        {
+            "id": "box182",
+            "color": "white"
+        },
+        {
+            "id": "box183",
+            "color": "white"
+        },
+        {
+            "id": "box184",
+            "color": "white"
+        },
+        {
+            "id": "box185",
+            "color": "white"
+        },
+        {
+            "id": "box186",
+            "color": "white"
+        },
+        {
+            "id": "box187",
+            "color": "white"
+        },
+        {
+            "id": "box188",
+            "color": "white"
+        },
+        {
+            "id": "box189",
+            "color": "white"
+        },
+        {
+            "id": "box190",
+            "color": "white"
+        },
+        {
+            "id": "box191",
+            "color": "white"
+        },
+        {
+            "id": "box192",
+            "color": "white"
+        },
+        {
+            "id": "box193",
+            "color": "white"
+        },
+        {
+            "id": "box194",
+            "color": "white"
+        },
+        {
+            "id": "box195",
+            "color": "white"
+        },
+        {
+            "id": "box196",
+            "color": "white"
+        },
+        {
+            "id": "box197",
+            "color": "white"
+        },
+        {
+            "id": "box198",
+            "color": "white"
+        },
+        {
+            "id": "box199",
+            "color": "white"
+        },
+        {
+            "id": "box200",
+            "color": "white"
+        },
+        {
+            "id": "box201",
+            "color": "white"
+        },
+        {
+            "id": "box202",
+            "color": "white"
+        },
+        {
+            "id": "box203",
+            "color": "white"
+        },
+        {
+            "id": "box204",
+            "color": "white"
+        },
+        {
+            "id": "box205",
+            "color": "white"
+        },
+        {
+            "id": "box206",
+            "color": "white"
+        },
+        {
+            "id": "box207",
+            "color": "white"
+        },
+        {
+            "id": "box208",
+            "color": "white"
+        },
+        {
+            "id": "box209",
+            "color": "white"
+        },
+        {
+            "id": "box210",
+            "color": "white"
+        },
+        {
+            "id": "box211",
+            "color": "white"
+        },
+        {
+            "id": "box212",
+            "color": "white"
+        },
+        {
+            "id": "box213",
+            "color": "white"
+        },
+        {
+            "id": "box214",
+            "color": "white"
+        },
+        {
+            "id": "box215",
+            "color": "white"
+        },
+        {
+            "id": "box216",
+            "color": "white"
+        },
+        {
+            "id": "box217",
+            "color": "white"
+        },
+        {
+            "id": "box218",
+            "color": "white"
+        },
+        {
+            "id": "box219",
+            "color": "white"
+        },
+        {
+            "id": "box220",
+            "color": "white"
+        },
+        {
+            "id": "box221",
+            "color": "white"
+        },
+        {
+            "id": "box222",
+            "color": "white"
+        },
+        {
+            "id": "box223",
+            "color": "white"
+        },
+        {
+            "id": "box224",
+            "color": "white"
+        },
+        {
+            "id": "box225",
+            "color": "white"
+        }
+    ]   
+
+}
+###
