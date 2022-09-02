@@ -6,7 +6,6 @@ import './game.scss';
 
 import axios from 'axios';
 import img1a from './6310a34fd91c31ad1a363a03.png';
-import { Socket } from 'socket.io-client';
 
 // import 6310a34fd91c31ad1a363a03 from
 // alla bilder i en array
@@ -25,6 +24,10 @@ const Game = () => {
   const [allDone, setAllDone] = useState(false);
   const [start, SetStart] = useState(false);
   const [pointsCounter, setPointsCounter] = useState(0);
+  const [watcher, setWatcher] = useState(false);
+  const [player, setPlayer] = useState(false);
+  const points = useRef(1);
+
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -65,6 +68,12 @@ const Game = () => {
 
   const handleRoomStatus = (roomStatus) => {
     console.log(roomStatus);
+
+    if (roomStatus == "får inte spela") {
+      setWatcher(true);
+    } else {
+      setPlayer(true);
+    }
   };
 
   //hanterar submit av meddelande
@@ -103,7 +112,7 @@ const Game = () => {
     }
 
     // emittar join request
-    socket.emit('user:joined', chatUsername, room_id, (status) => {
+    socket.emit('user:joined', chatUsername, room_id,  (status) => {
       // console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
 
       setConnected(true);
@@ -131,6 +140,9 @@ const Game = () => {
 
       // setPointsCounter(result);
 
+      console.log(result);
+      points.current = Math.round(result);
+
       if(text === "done") {
         setAllDone(true);
       }
@@ -152,7 +164,8 @@ const Game = () => {
       socket.off('user:joined');
       socket.emit('user:left', chatUsername, room_id);
     };
-  }, [socket, room_id, chatUsername, navigate, result]);
+  // }, [socket, room_id, chatUsername, navigate, result]);
+  }, [socket, room_id, chatUsername, navigate, points]);
 
   // let facit = [];
   // Service för att spara bild
@@ -286,6 +299,7 @@ const Game = () => {
 
         setPointsCounter(percent);
         console.log(pointsCounter);
+        points.current = Math.round(percent);
 
       } else {
         console.log('Fel');
@@ -296,7 +310,7 @@ const Game = () => {
 
     console.log('COLORBOARD Utanför', colorBoard);
 
-    socket.emit('donePlaying', socket.id, room_id, pointsCounter);
+    socket.emit('donePlaying', socket.id, room_id, points.current);
 
     setDone(true);
 
@@ -369,6 +383,11 @@ const Game = () => {
     return <p>Stand by, connecting....</p>;
   }
 
+  let showBtn = <>Tyvärr är pennorna slut, men du får gärna titta på!</>
+  if (player) {
+    showBtn = <button id='btnDone' disabled={done} onClick={donePlaying}>Klar</button>
+  }
+
   return (
     <div id='Wrapper'>
       <div id='chat'>
@@ -418,8 +437,8 @@ const Game = () => {
         <div className='containerResult'>
           <h2>Resultat</h2>
           <h3>{result}</h3>
-          <h3>{pointsCounter}% rätt</h3>
-          <Progress done={pointsCounter} />
+          <h3>{points.current}% rätt</h3>
+          <Progress done={points.current} />
           {/* <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button> */}
           <button className='resultBtn'>
             <Link to='/'>Spela igen</Link>
@@ -432,9 +451,10 @@ const Game = () => {
           <img src={img1a} alt='img1' />
         </div>
         <h3>{result}</h3>
-        <button id='btnDone' disabled={done} onClick={donePlaying}>
+        {/* <button id='btnDone' disabled={done} onClick={donePlaying}>
           Klar
-        </button>
+        </button> */}
+        {showBtn}
         {/* <button id="btnDone" disabled={done} onClick={function(){donePlaying(); clearInterval(gameTime)}}>Klar</button> */}
       </div>
     </div>

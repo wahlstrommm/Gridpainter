@@ -54,6 +54,7 @@ router.post("/save", async (req, res) => {
 
 
 // router.post('/', (res, req) => {
+
 //     req.app.locals.db.collection("Imgs").insert({ img: req.body.img }).then(
 //         result => {
 //             console.log("One image added", result);
