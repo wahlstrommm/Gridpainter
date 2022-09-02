@@ -23,9 +23,7 @@
 
 ::-webkit-scrollbar-thumb:active {
   background: #0b294e;
-  
 }
-
 
 #Wrapper {
   display: flex;
@@ -62,10 +60,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background: rgb(64,93,193);
-  background: linear-gradient(250deg, rgba(64,93,193,1) 0%, rgba(62,95,212,1) 35%, rgba(93,124,234,1) 100%);
-  -webkit-box-shadow: 2px 0px 15px 5px rgba(0,0,0,0.5); 
-  box-shadow: 2px 0px 15px 5px rgba(0,0,0,0.5);
+  background: rgb(64, 93, 193);
+  background: linear-gradient(250deg, rgba(64, 93, 193, 1) 0%, rgba(62, 95, 212, 1) 35%, rgba(93, 124, 234, 1) 100%);
+  -webkit-box-shadow: 2px 0px 15px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 0px 15px 5px rgba(0, 0, 0, 0.5);
   width: 25%;
   height: 100vh;
 
@@ -92,29 +90,27 @@
     ul {
       list-style-type: none;
       padding-left: 10px;
-      
     }
 
     li {
       color: black;
       font-size: 1.2rem;
-      font-weight: bold; 
+      font-weight: bold;
       text-shadow: 1px 1px #000;
-    }   
+    }
     li:nth-child(1) {
       color: blue;
-    }  
+    }
     li:nth-child(2) {
       color: red;
-    }   
+    }
     li:nth-child(3) {
       color: yellow;
     }
     li:nth-child(4) {
       color: green;
-    }     
+    }
   }
-  
 
   div:nth-child(2) {
     display: flex;
@@ -122,19 +118,13 @@
     justify-content: space-between;
     height: 70%;
     width: 95%;
-    
+
     ul {
       padding-left: 10px;
       list-style-type: none;
       overflow-y: scroll;
-      mask-image: -webkit-gradient(
-        linear,
-        left 20%,
-        left top,
-        from(rgba(0,0,0,1)),
-        to(rgba(0,0,0,0))
-    );
-      
+      mask-image: -webkit-gradient(linear, left 20%, left top, from(rgba(0, 0, 0, 1)), to(rgba(0, 0, 0, 0)));
+
       li {
         padding: 10px;
         font-size: 1.2rem;
@@ -147,7 +137,6 @@
       align-items: center;
       justify-content: center;
       margin-top: 10px;
-      
 
       input {
         display: flex;
@@ -228,10 +217,10 @@
 .leftWrapper {
   height: 100vh;
   width: 20vw;
-  background: rgb(64,93,193);
-  background: linear-gradient(20deg, rgba(64,93,193,1) 0%, rgba(62,95,212,1) 35%, rgba(93,124,234,1) 100%);
-  -webkit-box-shadow: -2px 0px 15px 5px rgba(0,0,0,0.5); 
-  box-shadow: -2px 0px 15px 5px rgba(0,0,0,0.5);
+  background: rgb(64, 93, 193);
+  background: linear-gradient(20deg, rgba(64, 93, 193, 1) 0%, rgba(62, 95, 212, 1) 35%, rgba(93, 124, 234, 1) 100%);
+  -webkit-box-shadow: -2px 0px 15px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: -2px 0px 15px 5px rgba(0, 0, 0, 0.5);
 
   div:nth-child(1) {
     height: 25%;
@@ -250,4 +239,26 @@
 
 .messageref {
   opacity: 0%;
+}
+.progress {
+  background-color: #d8d8d8;
+  border-radius: 20px;
+  position: relative;
+  margin: 15px 0;
+  height: 30px;
+  width: 300px;
+}
+
+.progress-done {
+  background: linear-gradient(to left, #f2709c, #ff9472);
+  box-shadow: 0 3px 3px -5px #f2709c, 0 2px 5px #f2709c;
+  border-radius: 20px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 0;
+  opacity: 0;
+  transition: 1s ease 0.3s;
 }

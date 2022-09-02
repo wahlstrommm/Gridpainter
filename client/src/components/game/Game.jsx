@@ -4,10 +4,10 @@ import { useChatContext } from '../../context/ChatContextProvider';
 // import { PostImgService } from '../../services/PostImgService';
 import './game.scss';
 
-import axios from "axios";
+import axios from 'axios';
 import img1 from './6310a34fd91c31ad1a363a03.png';
 
-// import 6310a34fd91c31ad1a363a03 from 
+// import 6310a34fd91c31ad1a363a03 from
 // alla bilder i en array
 // for loop
 // if(monogDB_id == imgArray[i])
@@ -23,6 +23,7 @@ const Game = () => {
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
   const [start, SetStart] = useState(false);
+  const [pointsCounter, setPointsCounter] = useState(1);
   //grid
   const [yourDivs, setYourDivs] = useState([]);
   const { chatUsername, socket } = useChatContext();
@@ -45,7 +46,6 @@ const Game = () => {
   //     effectRan.current = true;
   //   }
   // },[])
-
 
   const handleIncomingMessage = (msg) => {
     console.log('Received a new chat message', msg);
@@ -124,18 +124,18 @@ const Game = () => {
       generateYourDivs(nr, color);
     });
 
-    socket.on("donePlaying", (text) => {
+    socket.on('donePlaying', (text) => {
       console.log(text);
 
-      if (text == "done") {
+      if (text === 'done') {
         setAllDone(true);
       }
     });
 
-    socket.on('result', (result) => {
-      console.log(result);
-      setResult(result);
-    });
+    // socket.on('result', (result) => {
+    //   console.log(result);
+    //   setResult(result);
+    // });
 
     return () => {
       // Slutar lyssna
@@ -143,7 +143,7 @@ const Game = () => {
       socket.off('roomAvailability', handleRoomStatus);
       socket.off('user:list', handleUpdateUsers);
       socket.off('coloredPiece');
-      socket.off('result');
+      // socket.off('result');
       socket.off('user:joined');
       socket.emit('user:left', chatUsername, room_id);
     };
@@ -162,9 +162,32 @@ const Game = () => {
   //   })
   // }, [save]);
 
+  // let startCounting = 0;
+
+  // // timer som räknar upp sekunder
+  // const gameTime = () => {
+  //   setInterval(() => {
+  //     ++startCounting;
+
+  //     let hour = Math.floor(startCounting / 3600);
+  //     let minute = Math.floor(startCounting - hour*3600)/60;
+  //     let seconds = startCounting - (hour*3600 + minute*60)
+
+  //     if (hour < 10) {
+  //       hour = "0"+hour;
+  //     }
+  //     if (minute < 10) {
+  //       minute = "0"+minute;
+  //     }
+  //     if (seconds < 10) {
+  //       seconds = "0"+seconds;
+  //     }
+  //     setResult(startCounting);
+  //   }, 1000);
+  // };
+
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
-
     if (start) {
       SetStart(false);
     } else {
@@ -175,25 +198,29 @@ const Game = () => {
     socket.emit('coloredPiece', id, room_id, socketId, true);
   };
 
-
   const handleClickStart = () => {
-    console.log("Start");
+    console.log('Start');
+
+    // gameTime();
+
     let rightPictures = [];
 
     rightPictures.push('6310a34fd91c31ad1a363a03');
     console.log(rightPictures);
-    axios.get("http://localhost:4000/img/imgs").then(res => {
-      let imgsContainer = document.getElementById("imgsContainer");
+
+    axios.get('http://localhost:4000/img/imgs').then((res) => {
+      let imgsContainer = document.getElementById('imgsContainer');
       console.log(res.data);
+
       res.data.forEach((i) => {
         console.log(i._id);
         if (i._id == rightPictures[0]) {
           console.log(rightPictures[0]);
-          console.log("Rätt bild");
+          console.log('Rätt bild');
           console.log(i);
           // facit.push(i);
           // console.log(typeof (facit));
-          console.log(typeof (i.img));
+          console.log(typeof i.img);
           // console.log(facit);
           setImg1(i.img);
           console.log(img1);
@@ -216,57 +243,60 @@ const Game = () => {
     return setYourDivs(yourDivBoxes);
   };
 
-
-
   //event för klar knappen
   const donePlaying = () => {
     //id, boolean
     console.log(socket.id);
     //IF SocketID + Color etc.
     socket.emit('donePlaying', socket.id, room_id);
-    // children till YourDivs? 
+    // children till YourDivs?
     console.log(yourDivs);
 
-    let gameboard = document.getElementById("gameboard");
-
+    let gameboard = document.getElementById('gameboard');
     let colorBoard = [];
-
-
 
     for (let i = 0; i < gameboard.children.length; i++) {
       // console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor);
       // console.log("Children:", gameboard.children[i].style);
 
-      let eachDiv = { "id": gameboard.children[i].id, "color": gameboard.children[i].style.backgroundColor };
-      if (eachDiv.color == "") {
-        eachDiv.color = "white";
+      let eachDiv = { id: gameboard.children[i].id, color: gameboard.children[i].style.backgroundColor };
+      if (eachDiv.color == '') {
+        eachDiv.color = 'white';
+        colorBoard.push(eachDiv);
+      } else {
         colorBoard.push(eachDiv);
       }
-      else {
-        colorBoard.push(eachDiv);
-      }
-
     }
-    console.log("FACIT:", img1);
-    console.log("COLORBOARD", colorBoard);
+
+    console.log('FACIT:', img1);
+    console.log('COLORBOARD', colorBoard);
     // let res = img1.img;
+
+    let counter = 0;
+
     colorBoard.forEach((num1, index) => {
       const num2 = img1[index];
-      console.log("colorBoard::", num1.color, "Facit:", num2.color);
+      console.log('colorBoard:', num1.color, 'Facit:', num2.color);
 
-      if (num1.color == num2.color) {
-        console.log("Rätt");
+      if (num1.color === num2.color) {
+        counter++;
+        console.log('Rätt', counter);
+
+        let percent = (counter / 225) * 100;
+        console.log(percent);
+
+        setPointsCounter(Math.round(percent));
       } else {
-        console.log("Fel");
+        console.log('Fel');
       }
 
+      console.log(pointsCounter);
     });
-    
-    console.log("COLORBOARD Utanför", colorBoard);
+
+    console.log('COLORBOARD Utanför', colorBoard);
 
     setDone(true);
 
-    
     // facit.forEach(function (item, index) {
     //   console.log(item, colorBoard[index]);
     // });
@@ -274,41 +304,62 @@ const Game = () => {
     let players = Object.values(users);
     let date = new Date();
     let dateString = date.toLocaleString();
-    console.log("USER", players);
-    axios.post("http://localhost:4000/img/save", { colorBoard, room_id, players, dateString }, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(res => {
-      console.log("Hej från axios, save img", res);
-      console.log(res);
-    }).catch(err => {
-      console.log(err);
-    });
-
-
-
+    console.log('USER', players);
+    axios
+      .post(
+        'http://localhost:4000/img/save',
+        { colorBoard, room_id, players, dateString },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((res) => {
+        console.log('Hej från axios, save img', res);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
+  // const saveImg = () => {
+  //   // console.log("saveImag");
+  //   console.log(result);
+  // };
 
+  const Progress = ({ done }) => {
+    const [style, setStyle] = React.useState({});
 
+    setTimeout(() => {
+      const newStyle = {
+        opacity: 1,
+        width: `${pointsCounter}%`,
+      };
 
-  const saveImg = () => {
-    // console.log("saveImag");
-    console.log(result);
+      setStyle(newStyle);
+    }, 200);
+
+    return (
+      <div className="progress">
+        <div className="progress-done" style={style}>
+          {done}%
+        </div>
+      </div>
+    );
   };
-
   useEffect(() => {
     //fokus på message input
     messageRef.current && messageRef.current.focus();
     generateYourDivs();
   }, []);
-  
+
   // useEffect(() => {
-	// 	messageEndRef.current?.scrollIntoView({
-	// 		behavior: 'smooth',
-	// 	});
-	// }, [messages]);
+  // 	messageEndRef.current?.scrollIntoView({
+  // 		behavior: 'smooth',
+  // 	});
+  // }, [messages]);
 
   // Ifall det inte sker en connection
   if (!connected) {
@@ -349,16 +400,16 @@ const Game = () => {
         </div>
       </div>
 
-
-      <div className="parent" id="gameboard" >
+      <div className="parent" id="gameboard">
         {yourDivs}
       </div>
       <div id="resultboard" style={{ display: allDone ? 'block' : 'none' }}>
-        <div className='containerResult'>
+        <div className="containerResult">
           <h2>Resultat</h2>
           <h3>{result}</h3>
-          {/* <h3>100% rätt</h3> */}
-          <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button>
+          <h3>{pointsCounter}% rätt</h3>
+          <Progress done={pointsCounter} />
+          {/* <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button> */}
           <button className="resultBtn">
             <Link to="/">Spela igen</Link>
           </button>
@@ -366,18 +417,20 @@ const Game = () => {
       </div>
 
       <div className="leftWrapper">
-        <div id='imgsContainer'>
-          <img src={img1} alt='img1' />
+        <div id="imgsContainer">
+          <img src={img1} alt="img1" />
         </div>
-        <div>Tid: 276sek</div>
-        <button id="btnDone" disabled={done} onClick={donePlaying}>Klar</button>
-        <button id='' disabled={start} onClick={handleClickStart}>Måla av </button>
+        <h3>{result}</h3>
+        <button id="btnDone" disabled={done} onClick={donePlaying}>
+          Klar
+        </button>
+        {/* <button id="btnDone" disabled={done} onClick={function(){donePlaying(); clearInterval(gameTime)}}>Klar</button> */}
+        <button id="" disabled={start} onClick={handleClickStart}>
+          Måla av{' '}
+        </button>
       </div>
-
     </div>
   );
 };
-
-
 
 export default Game;
