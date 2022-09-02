@@ -82,15 +82,15 @@ const handleUserJoined = function (username, room_id, callback) {
     users: room.users,
   });
 
-  if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 2) {
+  if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 4) {
     io.to(room.id).emit('roomAvailability', 'får spela');
     debug('Hej här spela');
     debug('room_id', room_id, 'room.id', room.id);
 
     usersObject = [];
 
-    if (Object.values(room.users).length == 2 && room_id == room.id) {
-      let colors = ['blue', 'red'];
+    if (Object.values(room.users).length == 4 && room_id == room.id) {
+      let colors = ['blue', 'red', 'yellow', 'green'];
       let users = Object.values(room.users);
       let keys = Object.keys(room.users);
 
@@ -155,23 +155,53 @@ const handleColoredPiece = async function (piece, roomId, socketId) {
   }
 };
 
-let counter = 0;
+let room1List = [];
+let room2List = [];
+let room3List = [];
 
 //hantera att en Klar-knapp är klickad
-const handleDonePlaying = (socketId, roomId) => {
-  console.log('Socket:', socketId);
-  console.log(roomId);
-  console.log('Counter:', counter);
-  counter++;
-  console.log('Counter:', counter);
-  if (counter == 2) {
-    console.log("hamnar i doneplaying, if-sats");
-    io.to(roomId).emit('donePlaying', 'done');
+const handleDonePlaying = (socketId, roomId, pointsCounter ) => {
+  console.log('vilken person trycker på boxen rutan Socket:', socketId);
+  console.log("roomId", roomId);
 
-    counter = 0;
+  let room1 = "room1";
+  let room2 = "room2";
+  let room3 = "room3";
+
+  if (roomId == room1) {
+    room1List.push({socketId: socketId, points: pointsCounter});
+  } else if (roomId == room2) {
+    room2List.push({ socketId: socketId, points: pointsCounter });
+  } else if (roomId == room3) {
+    room3List.push({ socketId: socketId, points: pointsCounter });
+  } else {
+    console.log("Ingen matchning i rum");
+  }
+
+  console.log("room1List", room1List);
+
+  // console.log('Counter:', counter1, counter2, counter3);
+  if (room1List.length || room2List.length || room3List.length == 4) {
+    console.log("hamnar i doneplaying, if-sats");
+
+    if (room1List.length == 4) {
+      io.to(roomId).emit('donePlaying', 'done', room1List[3].points);
+      room1List = [];
+    } else if (room2List.length == 4 ) {
+      io.to(roomId).emit('donePlaying', 'done', room2List[3].points);
+      room2List = [];
+    } else if (room3List.length == 4 ) {
+      io.to(roomId).emit('donePlaying', 'done', room3List[3].points);
+      room3List = [];
+    } else {
+      console.log("Hamnar i else");
+    }
   } else {
     // io.to(roomId).emit('donePlaying', 'nej');
   }
+
+
+
 };
 
 //hanterar att spara en bild
