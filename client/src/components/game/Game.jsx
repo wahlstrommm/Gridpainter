@@ -10,7 +10,6 @@ import img1b from './631274fbd0dedd31d93602d0.png';
 
 // import img from '`${rightId.current}.png`'
 
-
 const Game = () => {
   const [message, setMessage] = useState('');
   const [result, setResult] = useState('');
@@ -70,7 +69,7 @@ const Game = () => {
   const handleRoomStatus = (roomStatus) => {
     console.log(roomStatus);
 
-    if (roomStatus == "får inte spela") {
+    if (roomStatus == 'får inte spela') {
       setWatcher(true);
     } else {
       setPlayer(true);
@@ -154,7 +153,7 @@ const Game = () => {
       console.log(result);
       points.current = Math.round(result);
 
-      if (text === "done") {
+      if (text === 'done') {
         setAllDone(true);
       }
     });
@@ -184,7 +183,6 @@ const Game = () => {
   };
 
   const handleClickStart = () => {
-
     let finishTime = ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':' + ('0' + Math.floor((time / 1000) % 60)).slice(-2) + ':' + ('0' + ((time / 10) % 100)).slice(-2);
 
     let allImg = ['6310a34fd91c31ad1a363a03', '631274fbd0dedd31d93602d0'];
@@ -199,16 +197,13 @@ const Game = () => {
       }
     }
 
-
     axios.get('http://localhost:4000/img/imgs').then((res) => {
-
       let imgContainer = document.getElementById('imgContainer');
       console.log(res.data);
 
       res.data.forEach((i) => {
         console.log(i._id);
         if (i._id == rightPic) {
-
           console.log(rightId);
 
           if (rightId.current == 0) {
@@ -230,18 +225,25 @@ const Game = () => {
     });
   };
 
+  React.useEffect(() => {
+    let interval = null;
+
+    if (timerOn) {
+      interval = setInterval(() => {
+        setTime((prevTime) => prevTime + 10);
+      }, 10);
+    } else if (!timerOn) {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [timerOn]);
+
   const generateYourDivs = async (nr, color) => {
     const yourDivBoxes = [];
 
     for (let i = 1; i < 226; i++) {
-      yourDivBoxes.push(
-        <div
-          className='gridBox'
-          key={[i]}
-          id={`box${i}`}
-          onClick={() => handleBoxClick(i, socket.id)}
-        ></div>
-      );
+      yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`} onClick={() => handleBoxClick(i, socket.id)}></div>);
 
       if (nr == i) {
         document.getElementById('box' + i).style.background = color;
@@ -255,7 +257,6 @@ const Game = () => {
 
   //event för klar knappen
   const donePlaying = () => {
-
     socket.emit('gameClock', false, room_id);
     //id, boolean
     console.log(socket.id);
@@ -303,13 +304,12 @@ const Game = () => {
         setPointsCounter(percent);
         console.log(pointsCounter);
         points.current = Math.round(percent);
-
       } else {
         console.log('Fel');
       }
     });
 
-    socket.emit("resultFromUser", pointsCounter);
+    socket.emit('resultFromUser', pointsCounter);
 
     console.log('COLORBOARD Utanför', colorBoard);
 
@@ -362,8 +362,8 @@ const Game = () => {
     }, 200);
 
     return (
-      <div className='progress'>
-        <div className='progress-done' style={style}>
+      <div className="progress">
+        <div className="progress-done" style={style}>
           {done}%
         </div>
       </div>
@@ -388,23 +388,25 @@ const Game = () => {
 
   console.log('DONE före', done);
 
-
   let showBtn = <>Tyvärr är pennorna slut, men du får gärna titta på!</>;
-    if (player) {
-      showBtn = <button id='btnDone' disabled={done} onClick={donePlaying}>Klar</button>;
-    }
+  if (player) {
+    showBtn = (
+      <button id="btnDone" disabled={done} onClick={donePlaying}>
+        Klar
+      </button>
+    );
+  }
 
-  
   return (
-    <div id='Wrapper'>
-      <div id='chat'>
+    <div id="Wrapper">
+      <div id="chat">
         <div>
           <h2>Game och chatt {room_id}</h2>
           <h3>Users</h3>
           <ul>
             {Object.values(users).map((user, index) => (
               <li key={index}>
-                <span className='user-icon'>🧑</span> {user}
+                <span className="user-icon">🧑</span> {user}
               </li>
             ))}
           </ul>
@@ -415,47 +417,40 @@ const Game = () => {
           <ul>
             {messages.map((message, i) => (
               <li key={i}>
-                <span className='user'>{message.username}: </span>
-                <span className='content'>{message.content}</span>
+                <span className="user">{message.username}: </span>
+                <span className="content">{message.content}</span>
               </li>
             ))}
             <div ref={messageEndRef} />
           </ul>
           <form onSubmit={handleSubmit}>
-            <input
-              ref={messageRef}
-              required
-              type='text'
-              placeholder='Skicka meddelande'
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button type='submit' id='submit'>
+            <input ref={messageRef} required type="text" placeholder="Skicka meddelande" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button type="submit" id="submit">
               Skicka
             </button>
           </form>
         </div>
       </div>
 
-      <div className='parent' id='gameboard'>
+      <div className="parent" id="gameboard">
         {yourDivs}
       </div>
-      <div id='resultboard' style={{ display: allDone ? 'block' : 'none' }}>
-        <div className='containerResult'>
+      <div id="resultboard" style={{ display: allDone ? 'block' : 'none' }}>
+        <div className="containerResult">
           <h2>Resultat</h2>
           <h3>{result}</h3>
           <h3>{points.current}% rätt</h3>
           <Progress done={points.current} />
           {/* <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button> */}
-          <button className='resultBtn'>
-            <Link to='/'>Spela igen</Link>
+          <button className="resultBtn">
+            <Link to="/">Spela igen</Link>
           </button>
         </div>
       </div>
 
-      <div className='leftWrapper'>
+      <div className="leftWrapper">
         <div>
-          <img id='imgContainer' alt='' />
+          <img id="imgContainer" alt="" />
         </div>
         <div id="display">
           <span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
