@@ -67,7 +67,6 @@
   width: 25%;
   height: 100vh;
 
-  
   div:nth-child(1) {
     h2 {
       color: #fff;
@@ -87,7 +86,7 @@
 
     li {
       color: black;
-      font-size: 1.3rem;  
+      font-size: 1.3rem;
     }
     li:nth-child(1) {
       color: blue;
@@ -174,7 +173,6 @@
     }
   }
 }
-
 
 // .gameInfo {
 //   height: 35vh;
@@ -267,4 +265,11 @@
   width: 0;
   opacity: 0;
   transition: 1s ease 0.3s;
+}
+#display > span {
+  color: white;
+  font-size: 1.8rem;
+}
+.containerForViewer {
+  margin: 10px;
 }
