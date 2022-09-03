@@ -94,6 +94,8 @@ const handleUserJoined = function (username, room_id, callback) {
       let users = Object.values(room.users);
       let keys = Object.keys(room.users);
 
+      io.to(room_id).emit('gameClock', true, room_id);
+
       colors.forEach((color, i) => {
         currentUser = users[i];
         let key = keys[i];
@@ -201,6 +203,11 @@ const handleDonePlaying = (socketId, roomId, pointsCounter ) => {
   }
 };
 
+const handleGameClock = (runGameClock, roomId) => {
+  //skickar ut till alla att någon har klickat på "klar"
+  io.to(roomId).emit('gameClock', runGameClock, roomId);
+};
+
 //hanterar att spara en bild
 // let images = [[]];
 
@@ -260,5 +267,8 @@ module.exports = function (socket, _io) {
 
   // //hanterar spelare som är "klara"
   // socket.on('saveImg', handleSaveImg);
+
+  // hanterar klocka
+  socket.on('gameClock', handleGameClock);
 };
 

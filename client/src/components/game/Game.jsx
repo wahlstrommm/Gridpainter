@@ -24,6 +24,8 @@ const Game = () => {
   const [watcher, setWatcher] = useState(false);
   const [player, setPlayer] = useState(false);
   const points = useRef(1);
+  const [time, setTime] = React.useState(0);
+  const [timerOn, setTimerOn] = React.useState(false);
 
   //grid
   const [yourDivs, setYourDivs] = useState([]);
@@ -134,6 +136,16 @@ const Game = () => {
       generateYourDivs(nr, color);
     });
 
+    //Lyssnar på gameclock timer
+    socket.on('gameClock', (result) => {
+      console.log('GAMECLOCK', result);
+      if (result === true) {
+        setTimerOn(result);
+      } else {
+        setTimerOn(result);
+      }
+    });
+
     socket.on('donePlaying', (text, result) => {
       console.log(text, result);
 
@@ -155,6 +167,7 @@ const Game = () => {
       socket.off('coloredPiece');
       socket.off('donePlaying');
       socket.off('user:joined');
+      socket.off('gameClock');
       socket.emit('user:left', chatUsername, room_id);
     };
   }, [socket, room_id, chatUsername, navigate, points]);
@@ -171,6 +184,8 @@ const Game = () => {
   };
 
   const handleClickStart = () => {
+
+    let finishTime = ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':' + ('0' + Math.floor((time / 1000) % 60)).slice(-2) + ':' + ('0' + ((time / 10) % 100)).slice(-2);
 
     let allImg = ['6310a34fd91c31ad1a363a03', '631274fbd0dedd31d93602d0'];
 
@@ -240,6 +255,8 @@ const Game = () => {
 
   //event för klar knappen
   const donePlaying = () => {
+
+    socket.emit('gameClock', false, room_id);
     //id, boolean
     console.log(socket.id);
     //IF SocketID + Color etc.
@@ -439,6 +456,11 @@ const Game = () => {
       <div className='leftWrapper'>
         <div>
           <img id='imgContainer' alt='' />
+        </div>
+        <div id="display">
+          <span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
+          <span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
+          <span>{('0' + ((time / 10) % 100)).slice(-2)}</span>
         </div>
         <h3>{result}</h3>
         {showBtn}
