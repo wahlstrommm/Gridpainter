@@ -199,9 +199,6 @@ const handleDonePlaying = (socketId, roomId, pointsCounter ) => {
   } else {
     // io.to(roomId).emit('donePlaying', 'nej');
   }
-
-
-
 };
 
 //hanterar att spara en bild

@@ -6,12 +6,10 @@ import './game.scss';
 
 import axios from 'axios';
 import img1a from './6310a34fd91c31ad1a363a03.png';
+import img1b from './631274fbd0dedd31d93602d0.png';
 
-// import 6310a34fd91c31ad1a363a03 from
-// alla bilder i en array
-// for loop
-// if(monogDB_id == imgArray[i])
-// matchning = img.src
+// import img from '`${rightId.current}.png`'
+
 
 const Game = () => {
   const [message, setMessage] = useState('');
@@ -22,7 +20,6 @@ const Game = () => {
   const [color, setColor] = useState('');
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
-  const [start, SetStart] = useState(false);
   const [pointsCounter, setPointsCounter] = useState(0);
   const [watcher, setWatcher] = useState(false);
   const [player, setPlayer] = useState(false);
@@ -36,7 +33,9 @@ const Game = () => {
   const messageRef = useRef();
   const messageEndRef = useRef(null);
 
-  const [img1, setImg1] = useState({});
+  // const [img1, setImg1] = useState({});
+  const img1 = useRef({});
+  const rightId = useRef(Number);
 
   // const effectRan = useRef(false);
 
@@ -112,7 +111,7 @@ const Game = () => {
     }
 
     // emittar join request
-    socket.emit('user:joined', chatUsername, room_id,  (status) => {
+    socket.emit('user:joined', chatUsername, room_id, (status) => {
       // console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
 
       setConnected(true);
@@ -143,15 +142,10 @@ const Game = () => {
       console.log(result);
       points.current = Math.round(result);
 
-      if(text === "done") {
+      if (text === "done") {
         setAllDone(true);
       }
     });
-
-    // socket.on('result', (result) => {
-    //   console.log(result);
-    //   setResult(result);
-    // });
 
     return () => {
       // Slutar lyssna
@@ -159,27 +153,11 @@ const Game = () => {
       socket.off('roomAvailability', handleRoomStatus);
       socket.off('user:list', handleUpdateUsers);
       socket.off('coloredPiece');
-      // socket.off('result');
       socket.off('donePlaying');
       socket.off('user:joined');
       socket.emit('user:left', chatUsername, room_id);
     };
-  // }, [socket, room_id, chatUsername, navigate, result]);
   }, [socket, room_id, chatUsername, navigate, points]);
-
-  // let facit = [];
-  // Service för att spara bild
-  // useEffect(() => {
-  //   // let service = new PostImgService();
-
-  //   service.postImg(save).then(res => {
-  //     console.log("Hej från useEffect, save img", res);
-  //     console.log(res);
-  //   }).catch(err => {
-  //     console.log(err);
-  //   })
-  // }, [save]);
-
 
   // starta att måla fritt
   useEffect(() => {
@@ -188,42 +166,50 @@ const Game = () => {
 
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
-    // if (start) {
-    // 	SetStart(false);
-    // } else {
-    // 	SetStart(true);
-    // }
-
     console.log('Click box nr ' + id, color, socketId);
     socket.emit('coloredPiece', id, room_id, socketId, true);
   };
 
   const handleClickStart = () => {
-    console.log('Start');
 
-    // gameTime();
+    let allImg = ['6310a34fd91c31ad1a363a03', '631274fbd0dedd31d93602d0'];
 
-    let rightPictures = [];
+    let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
+    console.log(rightPic);
 
-    rightPictures.push('6310a34fd91c31ad1a363a03');
-    console.log(rightPictures);
+    for (let i = 0; i < allImg.length; i++) {
+      if (allImg[i] === rightPic) {
+        rightId.current = i;
+        console.log('index', i);
+      }
+    }
+
 
     axios.get('http://localhost:4000/img/imgs').then((res) => {
-      let imgsContainer = document.getElementById('imgsContainer');
+
+      let imgContainer = document.getElementById('imgContainer');
       console.log(res.data);
 
       res.data.forEach((i) => {
         console.log(i._id);
-        if (i._id == rightPictures[0]) {
-          console.log(rightPictures[0]);
+        if (i._id == rightPic) {
+
+          console.log(rightId);
+
+          if (rightId.current == 0) {
+            imgContainer.src = img1a;
+            img1.current = i.img;
+            console.log(img1.current);
+          }
+          if (rightId.current == 1) {
+            imgContainer.src = img1b;
+            img1.current = i.img;
+            console.log(img1.current);
+          }
+          console.log(rightPic);
           console.log('Rätt bild');
-          console.log(i);
-          // facit.push(i);
-          // console.log(typeof (facit));
-          console.log(typeof i.img);
-          // console.log(facit);
-          setImg1(i.img);
-          console.log(img1);
+          // console.log(i);
+          // console.log(img1.current);
         }
       });
     });
@@ -257,7 +243,7 @@ const Game = () => {
     //id, boolean
     console.log(socket.id);
     //IF SocketID + Color etc.
-    
+
     // children till YourDivs?
     console.log(yourDivs);
 
@@ -280,14 +266,14 @@ const Game = () => {
       }
     }
 
-    console.log('FACIT:', img1);
+    console.log('FACIT:', img1.current);
     console.log('COLORBOARD', colorBoard);
     // let res = img1.img;
 
     let counter = 0;
 
     colorBoard.forEach((num1, index) => {
-      const num2 = img1[index];
+      const num2 = img1.current[index];
       console.log('colorBoard:', num1.color, 'Facit:', num2.color);
 
       if (num1.color === num2.color) {
@@ -305,7 +291,7 @@ const Game = () => {
         console.log('Fel');
       }
     });
-    
+
     socket.emit("resultFromUser", pointsCounter);
 
     console.log('COLORBOARD Utanför', colorBoard);
@@ -383,11 +369,15 @@ const Game = () => {
     return <p>Stand by, connecting....</p>;
   }
 
-  let showBtn = <>Tyvärr är pennorna slut, men du får gärna titta på!</>
-  if (player) {
-    showBtn = <button id='btnDone' disabled={done} onClick={donePlaying}>Klar</button>
-  }
+  console.log('DONE före', done);
 
+
+  let showBtn = <>Tyvärr är pennorna slut, men du får gärna titta på!</>;
+    if (player) {
+      showBtn = <button id='btnDone' disabled={done} onClick={donePlaying}>Klar</button>;
+    }
+
+  
   return (
     <div id='Wrapper'>
       <div id='chat'>
@@ -447,15 +437,11 @@ const Game = () => {
       </div>
 
       <div className='leftWrapper'>
-        <div id='imgsContainer'>
-          <img src={img1a} alt='img1' />
+        <div>
+          <img id='imgContainer' alt='' />
         </div>
         <h3>{result}</h3>
-        {/* <button id='btnDone' disabled={done} onClick={donePlaying}>
-          Klar
-        </button> */}
         {showBtn}
-        {/* <button id="btnDone" disabled={done} onClick={function(){donePlaying(); clearInterval(gameTime)}}>Klar</button> */}
       </div>
     </div>
   );
