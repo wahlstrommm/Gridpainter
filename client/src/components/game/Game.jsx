@@ -458,7 +458,7 @@ const Game = () => {
           <span>{('0' + ((time / 10) % 100)).slice(-2)}</span>
         </div>
         <h3>{result}</h3>
-        {showBtn}
+        <div className="containerForViewer">{showBtn}</div>
       </div>
     </div>
   );
