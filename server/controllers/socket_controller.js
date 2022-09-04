@@ -93,7 +93,7 @@ const handleUserJoined = function (username, room_id, callback) {
       let colors = ['blue', 'red', 'yellow', 'green'];
       let users = Object.values(room.users);
       let keys = Object.keys(room.users);
-
+      //Skickar ut att timern kan starta. Som det är fyra spelare som är redo att spela
       io.to(room_id).emit('gameClock', room_id, 'start');
 
       colors.forEach((color, i) => {
@@ -101,7 +101,6 @@ const handleUserJoined = function (username, room_id, callback) {
         let key = keys[i];
         currentColor = color;
 
-        console.log('Test', key, currentUser, currentColor);
         let userObject = { id: key, username: currentUser, color: currentColor };
         usersObject.push(userObject);
         allUsers.push(userObject);
@@ -206,12 +205,17 @@ const handleDonePlaying = (socketId, roomId, pointsCounter) => {
 let userListThatPressedDone = 0;
 let times = [];
 const handleGameClock = (roomId, state, timeFromUser) => {
+  //"klar" kommer när en spelare trycker på sin klar knapp.
   if (state == 'klar') {
+    //lägger till en. För varje spelare som är klar.
     userListThatPressedDone++;
+    //pushar in det i en lista som håller alla tider från alla fyra spelare
     times.push(timeFromUser);
     //Här har alla klickat klar!
     if (userListThatPressedDone === 4) {
+      //När alla är klara vill vi ha den sista tiden. Alltså den sista i listan. index 3.
       io.to(roomId).emit('gameClock', roomId, 'stop', times[3]);
+      //sen nollställs både "counter" och listan med tider.
       userListThatPressedDone = 0;
       times = [];
     } else {

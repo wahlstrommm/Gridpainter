@@ -24,7 +24,6 @@ const Game = () => {
   const [player, setPlayer] = useState(false);
   const points = useRef(1);
   const [finalTime, setFinalTime] = useState('');
-  // const finalTime = useRef('');
   const [time, setTime] = React.useState(0);
   const [timerOn, setTimerOn] = React.useState(false);
 
@@ -257,16 +256,21 @@ const Game = () => {
   //event för klar knappen
   const donePlaying = () => {
     let children = [];
+    //visar tiden dock som react element
     let timeFromUser = resultTime.props.children;
     for (let i = 0; i < timeFromUser.length; i++) {
       children.push(timeFromUser[i].props.children);
     }
+    //Slår ihop de till en array istället som jag fick innan en med flera arrays.
     let merged = [].concat.apply([], children);
     timeForCurrentUser = '';
+    //tar ut varje element alltifrån timme till hundradel även ":"
     for (let i = 0; i < merged.length; i++) {
       timeForCurrentUser += merged[i];
       console.log(timeForCurrentUser);
     }
+    //skickar upp det för att sedan ta reda på vilken den sista som tryckte och vilken tid
+    //den har som sedan blir gruppens slutgiltiga tid.
     socket.emit('gameClock', room_id, 'klar', timeForCurrentUser);
     console.log('REslut time:', resultTime.props.children);
 
