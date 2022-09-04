@@ -23,6 +23,8 @@ const Game = () => {
   const [watcher, setWatcher] = useState(false);
   const [player, setPlayer] = useState(false);
   const points = useRef(1);
+  const [finalTime, setFinalTime] = useState('');
+  // const finalTime = useRef('');
   const [time, setTime] = React.useState(0);
   const [timerOn, setTimerOn] = React.useState(false);
 
@@ -61,8 +63,6 @@ const Game = () => {
 
   const handleUpdateUsers = (userlist, userObject) => {
     console.log('Got new userlist', userObject);
-    // setColor(userObject.color);
-    // console.log("color", userObject.color);
     setUsers(userlist);
   };
 
@@ -103,6 +103,20 @@ const Game = () => {
     messageRef.current.focus();
   };
 
+  React.useEffect(() => {
+    let interval = null;
+
+    if (timerOn) {
+      interval = setInterval(() => {
+        setTime((prevTime) => prevTime + 10);
+      }, 10);
+    } else if (!timerOn) {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [timerOn]);
+
   //connectar till rum
   useEffect(() => {
     // Inget användarnamn = redirect till home
@@ -134,21 +148,22 @@ const Game = () => {
       // SetStart(state);
       generateYourDivs(nr, color);
     });
-
     //Lyssnar på gameclock timer
-    socket.on('gameClock', (result) => {
-      console.log('GAMECLOCK', result);
-      if (result === true) {
-        setTimerOn(result);
+    socket.on('gameClock', (roomId, userListThatPressedDone, resultTimeFromUsers) => {
+      setFinalTime(resultTimeFromUsers);
+      if (userListThatPressedDone == 'start') {
+        setTimerOn(true);
       } else {
-        setTimerOn(result);
+        if (userListThatPressedDone == 'stop') {
+          setTimerOn(false);
+        } else {
+          console.log('Så många har tryckt klar:', userListThatPressedDone, finalTime);
+        }
       }
     });
 
     socket.on('donePlaying', (text, result) => {
       console.log(text, result);
-
-      // setPointsCounter(result);
 
       console.log(result);
       points.current = Math.round(result);
@@ -183,8 +198,6 @@ const Game = () => {
   };
 
   const handleClickStart = () => {
-    let finishTime = ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':' + ('0' + Math.floor((time / 1000) % 60)).slice(-2) + ':' + ('0' + ((time / 10) % 100)).slice(-2);
-
     let allImg = ['6310a34fd91c31ad1a363a03', '631274fbd0dedd31d93602d0'];
 
     let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
@@ -225,20 +238,6 @@ const Game = () => {
     });
   };
 
-  React.useEffect(() => {
-    let interval = null;
-
-    if (timerOn) {
-      interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 10);
-      }, 10);
-    } else if (!timerOn) {
-      clearInterval(interval);
-    }
-
-    return () => clearInterval(interval);
-  }, [timerOn]);
-
   const generateYourDivs = async (nr, color) => {
     const yourDivBoxes = [];
 
@@ -254,12 +253,25 @@ const Game = () => {
   };
 
   let percent;
-
+  let timeForCurrentUser;
   //event för klar knappen
   const donePlaying = () => {
-    socket.emit('gameClock', false, room_id);
+    let children = [];
+    let timeFromUser = resultTime.props.children;
+    for (let i = 0; i < timeFromUser.length; i++) {
+      children.push(timeFromUser[i].props.children);
+    }
+    let merged = [].concat.apply([], children);
+    timeForCurrentUser = '';
+    for (let i = 0; i < merged.length; i++) {
+      timeForCurrentUser += merged[i];
+      console.log(timeForCurrentUser);
+    }
+    socket.emit('gameClock', room_id, 'klar', timeForCurrentUser);
+    console.log('REslut time:', resultTime.props.children);
+
     //id, boolean
-    console.log(socket.id);
+    console.log('socketID', socket.id);
     //IF SocketID + Color etc.
 
     // children till YourDivs?
@@ -344,11 +356,6 @@ const Game = () => {
       });
   };
 
-  // const saveImg = () => {
-  //   // console.log("saveImag");
-  //   console.log(result);
-  // };
-
   const Progress = ({ done }) => {
     const [style, setStyle] = React.useState({});
 
@@ -386,7 +393,7 @@ const Game = () => {
     return <p>Stand by, connecting....</p>;
   }
 
-  console.log('DONE före', done);
+  // console.log('DONE före', done);
 
   let showBtn = <>Tyvärr är pennorna slut, men du får gärna titta på!</>;
   if (player) {
@@ -394,6 +401,17 @@ const Game = () => {
       <button id="btnDone" disabled={done} onClick={donePlaying}>
         Klar
       </button>
+    );
+  }
+
+  let resultTime = <>Hej</>;
+  if (time) {
+    resultTime = (
+      <div id="display">
+        <span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
+        <span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
+        <span>{('0' + ((time / 10) % 100)).slice(-2)}</span>
+      </div>
     );
   }
 
@@ -438,8 +456,8 @@ const Game = () => {
       <div id="resultboard" style={{ display: allDone ? 'block' : 'none' }}>
         <div className="containerResult">
           <h2>Resultat</h2>
-          <h3>{result}</h3>
           <h3>{points.current}% rätt</h3>
+          <h3>{finalTime}</h3>
           <Progress done={points.current} />
           {/* <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button> */}
           <button className="resultBtn">

@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 const debug = require('debug')('gridpainter:socket_controller');
 let io = null;
 
@@ -94,7 +94,7 @@ const handleUserJoined = function (username, room_id, callback) {
       let users = Object.values(room.users);
       let keys = Object.keys(room.users);
 
-      io.to(room_id).emit('gameClock', true, room_id);
+      io.to(room_id).emit('gameClock', room_id, 'start');
 
       colors.forEach((color, i) => {
         currentUser = users[i];
@@ -144,7 +144,7 @@ const handleUserLeft = async function (username, room_id) {
 const handleColoredPiece = async function (piece, roomId, socketId) {
   let rightColor;
 
-  console.log("log rad 141", piece, roomId, socketId);
+  console.log('log rad 141', piece, roomId, socketId);
 
   for (let i = 0; i < allUsers.length; i++) {
     rightColor = allUsers[i].color;
@@ -162,50 +162,65 @@ let room2List = [];
 let room3List = [];
 
 //hantera att en Klar-knapp är klickad
-const handleDonePlaying = (socketId, roomId, pointsCounter ) => {
+const handleDonePlaying = (socketId, roomId, pointsCounter) => {
   console.log('vilken person trycker på boxen rutan Socket:', socketId);
-  console.log("roomId", roomId);
+  console.log('roomId', roomId);
 
-  let room1 = "room1";
-  let room2 = "room2";
-  let room3 = "room3";
+  let room1 = 'room1';
+  let room2 = 'room2';
+  let room3 = 'room3';
 
   if (roomId == room1) {
-    room1List.push({socketId: socketId, points: pointsCounter});
+    room1List.push({ socketId: socketId, points: pointsCounter });
   } else if (roomId == room2) {
     room2List.push({ socketId: socketId, points: pointsCounter });
   } else if (roomId == room3) {
     room3List.push({ socketId: socketId, points: pointsCounter });
   } else {
-    console.log("Ingen matchning i rum");
+    console.log('Ingen matchning i rum');
   }
 
-  console.log("room1List", room1List);
+  console.log('room1List', room1List);
 
   // console.log('Counter:', counter1, counter2, counter3);
   if (room1List.length || room2List.length || room3List.length == 4) {
-    console.log("hamnar i doneplaying, if-sats");
+    console.log('hamnar i doneplaying, if-sats');
 
     if (room1List.length == 4) {
       io.to(roomId).emit('donePlaying', 'done', room1List[3].points);
       room1List = [];
-    } else if (room2List.length == 4 ) {
+    } else if (room2List.length == 4) {
       io.to(roomId).emit('donePlaying', 'done', room2List[3].points);
       room2List = [];
-    } else if (room3List.length == 4 ) {
+    } else if (room3List.length == 4) {
       io.to(roomId).emit('donePlaying', 'done', room3List[3].points);
       room3List = [];
     } else {
-      console.log("Hamnar i else");
+      console.log('Hamnar i else');
     }
   } else {
     // io.to(roomId).emit('donePlaying', 'nej');
   }
 };
 
-const handleGameClock = (runGameClock, roomId) => {
+let userListThatPressedDone = 0;
+let times = [];
+const handleGameClock = (roomId, state, timeFromUser) => {
+  if (state == 'klar') {
+    userListThatPressedDone++;
+    times.push(timeFromUser);
+    //Här har alla klickat klar!
+    if (userListThatPressedDone === 4) {
+      io.to(roomId).emit('gameClock', roomId, 'stop', times[3]);
+      userListThatPressedDone = 0;
+      times = [];
+    } else {
+      io.to(roomId).emit('gameClock', roomId, userListThatPressedDone);
+    }
+  } else {
+    io.to(roomId).emit('gameClock', state, userListThatPressedDone);
+  }
   //skickar ut till alla att någon har klickat på "klar"
-  io.to(roomId).emit('gameClock', runGameClock, roomId);
 };
 
 //hanterar att spara en bild
@@ -216,10 +231,9 @@ const handleGameClock = (runGameClock, roomId) => {
 // const url = (process.env.MONGOATLAS);
 // mongoose.connect(url)
 
-
 // images.push(img);
 // console.log("images", images.length);
-// Här kan man jämföra med de bilderna vi har istället jag provade det 
+// Här kan man jämföra med de bilderna vi har istället jag provade det
 // let count = 0;
 
 // images.forEach(el => {
@@ -271,4 +285,3 @@ module.exports = function (socket, _io) {
   // hanterar klocka
   socket.on('gameClock', handleGameClock);
 };
-
