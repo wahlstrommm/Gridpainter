@@ -23,6 +23,7 @@ const Game = () => {
   const [watcher, setWatcher] = useState(false);
   const [player, setPlayer] = useState(false);
   const points = useRef(1);
+  //timern och resultatet på gruppens tid
   const [finalTime, setFinalTime] = useState('');
   const [time, setTime] = React.useState(0);
   const [timerOn, setTimerOn] = React.useState(false);
@@ -101,7 +102,7 @@ const Game = () => {
     setMessage('');
     messageRef.current.focus();
   };
-
+  //timern
   React.useEffect(() => {
     let interval = null;
 
@@ -147,12 +148,16 @@ const Game = () => {
       // SetStart(state);
       generateYourDivs(nr, color);
     });
-    //Lyssnar på gameclock timer
+
+    //Lyssnar på gameclock timer.Vilka som är klara och när timern ska starta & sluta
     socket.on('gameClock', (roomId, userListThatPressedDone, resultTimeFromUsers) => {
+      //sätter tiden för gruppen
       setFinalTime(resultTimeFromUsers);
+      //När rummet fylls med fyra spelare så emitar man ut "start" och då startar timern
       if (userListThatPressedDone == 'start') {
         setTimerOn(true);
       } else {
+        //Stoppas när alla har tryckt på klart
         if (userListThatPressedDone == 'stop') {
           setTimerOn(false);
         } else {
@@ -359,7 +364,7 @@ const Game = () => {
         console.log(err);
       });
   };
-
+  //Progress bar. Baseras på hur mycket rätt man fick
   const Progress = ({ done }) => {
     const [style, setStyle] = React.useState({});
 
@@ -408,6 +413,8 @@ const Game = () => {
     );
   }
 
+  //Denna används för att ta ut alla spelarnas tider (som man kan klicka på klar när man vill)
+  // som sedan tar fram gruppens slutgiltiga tid.
   let resultTime = <>Hej</>;
   if (time) {
     resultTime = (
