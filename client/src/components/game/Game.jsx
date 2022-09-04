@@ -5,8 +5,12 @@ import { useChatContext } from '../../context/ChatContextProvider';
 import './game.scss';
 
 import axios from 'axios';
-import img1a from './6310a34fd91c31ad1a363a03.png';
+import img1a from './63148270d91c31ad1a363a38.png';
 import img1b from './631274fbd0dedd31d93602d0.png';
+import img1c from './63146f30d91c31ad1a363a22.png';
+import img1d from './6314756fd91c31ad1a363a28.png';
+import img1e from './63147d73d91c31ad1a363a2e.png';
+
 
 // import img from '`${rightId.current}.png`'
 
@@ -37,6 +41,7 @@ const Game = () => {
   // const [img1, setImg1] = useState({});
   const img1 = useRef({});
   const rightId = useRef(Number);
+  const diableBoxes = useRef(false);
 
   // const effectRan = useRef(false);
 
@@ -185,7 +190,7 @@ const Game = () => {
   const handleClickStart = () => {
     let finishTime = ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':' + ('0' + Math.floor((time / 1000) % 60)).slice(-2) + ':' + ('0' + ((time / 10) % 100)).slice(-2);
 
-    let allImg = ['6310a34fd91c31ad1a363a03', '631274fbd0dedd31d93602d0'];
+    let allImg = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
 
     let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
     console.log(rightPic);
@@ -216,6 +221,21 @@ const Game = () => {
             img1.current = i.img;
             console.log(img1.current);
           }
+          if (rightId.current == 2) {
+            imgContainer.src = img1c;
+            img1.current = i.img;
+            console.log(img1.current);
+          }
+          if (rightId.current == 3) {
+            imgContainer.src = img1d;
+            img1.current = i.img;
+            console.log(img1.current);
+          }
+          if (rightId.current == 4) {
+            imgContainer.src = img1e;
+            img1.current = i.img;
+            console.log(img1.current);
+          }
           console.log(rightPic);
           console.log('Rätt bild');
           // console.log(i);
@@ -242,17 +262,23 @@ const Game = () => {
   const generateYourDivs = async (nr, color) => {
     const yourDivBoxes = [];
 
-    for (let i = 1; i < 226; i++) {
-      yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`} onClick={() => handleBoxClick(i, socket.id)}></div>);
+    if (diableBoxes.current == false) {
+      for (let i = 1; i < 226; i++) {
+        yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`} onClick={() => handleBoxClick(i, socket.id)}></div>);
 
-      if (nr == i) {
-        document.getElementById('box' + i).style.background = color;
+        if (nr == i) {
+          document.getElementById('box' + i).style.background = color;
+        }
       }
+
+      return setYourDivs(yourDivBoxes);
+    } else {
+      for (let i = 1; i < 226; i++) {
+        yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`}></div>);
+      }
+      return setYourDivs(yourDivBoxes);
     }
-
-    return setYourDivs(yourDivBoxes);
   };
-
   let percent;
 
   //event för klar knappen
@@ -316,6 +342,7 @@ const Game = () => {
     socket.emit('donePlaying', socket.id, room_id, points.current);
 
     setDone(true);
+    diableBoxes.current = true;
 
     // facit.forEach(function (item, index) {
     //   console.log(item, colorBoard[index]);
