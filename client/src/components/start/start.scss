@@ -10,6 +10,7 @@ section {
     font-size: 2rem;
     font-weight: bold;
     text-align: center;
+    letter-spacing: 0.03rem;
   }
 
   form {
@@ -25,6 +26,7 @@ section {
       font-size: 1.2rem;
       font-weight: bold;
       color: #fff;
+      letter-spacing: 0.05rem;
     }
 
     input,
@@ -33,15 +35,37 @@ section {
       flex-grow: 1;
       max-height: 30px;
       border-radius: 8px;
+      font-weight: bold;
+      letter-spacing: 0.03rem;
     }
 
-    input[type='submit'] {
+    input[type="text"] {
+      text-indent: 2%;
+      font-weight: bold;
+      letter-spacing: 0.03rem;
+    }
+
+    input[type="submit"] {
       background-color: #0b294e;
       color: #fff;
       font-size: 1.2rem;
       border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
+      letter-spacing: 0.03rem;
+      //Weird bug, need to set line height
+      line-height: 0px;
+
+      &:disabled {
+        background-color: #245591;
+        cursor: not-allowed;
+        color: #6387b4;
+
+        &:hover {
+          background-color: #245591;
+          color: #6387b4;
+        }
+      }
 
       &:hover {
         background-color: #2b6cbc;
@@ -61,7 +85,13 @@ section {
   font-size: 1.2rem;
   font-weight: bold;
   background-color: #0b294e;
-  
+  letter-spacing: 0.03rem;
+
+  &:hover {
+    background-color: #2b6cbc;
+    // color: black;
+  }
+
   a {
     color: #fff;
     text-decoration: none;

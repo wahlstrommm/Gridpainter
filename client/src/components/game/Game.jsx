@@ -1,26 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useChatContext } from '../../context/ChatContextProvider';
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useChatContext } from "../../context/ChatContextProvider";
 // import { PostImgService } from '../../services/PostImgService';
-import './game.scss';
+import "./game.scss";
 
-import axios from 'axios';
-import img1a from './63148270d91c31ad1a363a38.png';
-import img1b from './631274fbd0dedd31d93602d0.png';
-import img1c from './63146f30d91c31ad1a363a22.png';
-import img1d from './6314756fd91c31ad1a363a28.png';
-import img1e from './63147d73d91c31ad1a363a2e.png';
-
+import axios from "axios";
+import img1a from "./63148270d91c31ad1a363a38.png";
+import img1b from "./631274fbd0dedd31d93602d0.png";
+import img1c from "./63146f30d91c31ad1a363a22.png";
+import img1d from "./6314756fd91c31ad1a363a28.png";
+import img1e from "./63147d73d91c31ad1a363a2e.png";
 
 // import img from '`${rightId.current}.png`'
 
 const Game = () => {
-  const [message, setMessage] = useState('');
-  const [result, setResult] = useState('');
+  const [message, setMessage] = useState("");
+  const [result, setResult] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [connected, setConnected] = useState(false);
-  const [color, setColor] = useState('');
+  const [color, setColor] = useState("");
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
   const [pointsCounter, setPointsCounter] = useState(0);
@@ -58,14 +57,14 @@ const Game = () => {
   // },[])
 
   const handleIncomingMessage = (msg) => {
-    console.log('Received a new chat message', msg);
+    console.log("Received a new chat message", msg);
 
     // lägger till meddelande i chatt
     setMessages((prevMessages) => [...prevMessages, msg]);
   };
 
   const handleUpdateUsers = (userlist, userObject) => {
-    console.log('Got new userlist', userObject);
+    console.log("Got new userlist", userObject);
     // setColor(userObject.color);
     // console.log("color", userObject.color);
     setUsers(userlist);
@@ -74,7 +73,7 @@ const Game = () => {
   const handleRoomStatus = (roomStatus) => {
     console.log(roomStatus);
 
-    if (roomStatus == 'får inte spela') {
+    if (roomStatus == "får inte spela") {
       setWatcher(true);
     } else {
       setPlayer(true);
@@ -98,13 +97,13 @@ const Game = () => {
     };
 
     // emittar meddelande
-    socket.emit('chat:message', msg);
+    socket.emit("chat:message", msg);
 
     // lägger till meddelande i chatt
     setMessages((prevMessages) => [...prevMessages, { ...msg, self: true }]);
 
     //tömmer input och lägger fokus på input igen
-    setMessage('');
+    setMessage("");
     messageRef.current.focus();
   };
 
@@ -112,27 +111,27 @@ const Game = () => {
   useEffect(() => {
     // Inget användarnamn = redirect till home
     if (!chatUsername) {
-      navigate('/');
+      navigate("/");
       return;
     }
 
     // emittar join request
-    socket.emit('user:joined', chatUsername, room_id, (status) => {
+    socket.emit("user:joined", chatUsername, room_id, (status) => {
       // console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
 
       setConnected(true);
     });
 
-    socket.on('roomAvailability', handleRoomStatus);
+    socket.on("roomAvailability", handleRoomStatus);
 
     // Lyssnar efter meddelanden
-    socket.on('chat:message', handleIncomingMessage);
+    socket.on("chat:message", handleIncomingMessage);
 
     // Lyssnar efter en uppdaterad användarlista
-    socket.on('user:list', handleUpdateUsers);
+    socket.on("user:list", handleUpdateUsers);
 
     // Lyssnar på färgade rutor
-    socket.on('coloredPiece', (nr, color, socketId, state) => {
+    socket.on("coloredPiece", (nr, color, socketId, state) => {
       console.log(nr, color, socketId, state);
 
       setColor(color);
@@ -141,8 +140,8 @@ const Game = () => {
     });
 
     //Lyssnar på gameclock timer
-    socket.on('gameClock', (result) => {
-      console.log('GAMECLOCK', result);
+    socket.on("gameClock", (result) => {
+      console.log("GAMECLOCK", result);
       if (result === true) {
         setTimerOn(result);
       } else {
@@ -150,7 +149,7 @@ const Game = () => {
       }
     });
 
-    socket.on('donePlaying', (text, result) => {
+    socket.on("donePlaying", (text, result) => {
       console.log(text, result);
 
       // setPointsCounter(result);
@@ -158,21 +157,21 @@ const Game = () => {
       console.log(result);
       points.current = Math.round(result);
 
-      if (text === 'done') {
+      if (text === "done") {
         setAllDone(true);
       }
     });
 
     return () => {
       // Slutar lyssna
-      socket.off('chat:message', handleIncomingMessage);
-      socket.off('roomAvailability', handleRoomStatus);
-      socket.off('user:list', handleUpdateUsers);
-      socket.off('coloredPiece');
-      socket.off('donePlaying');
-      socket.off('user:joined');
-      socket.off('gameClock');
-      socket.emit('user:left', chatUsername, room_id);
+      socket.off("chat:message", handleIncomingMessage);
+      socket.off("roomAvailability", handleRoomStatus);
+      socket.off("user:list", handleUpdateUsers);
+      socket.off("coloredPiece");
+      socket.off("donePlaying");
+      socket.off("user:joined");
+      socket.off("gameClock");
+      socket.emit("user:left", chatUsername, room_id);
     };
   }, [socket, room_id, chatUsername, navigate, points]);
 
@@ -183,14 +182,25 @@ const Game = () => {
 
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
-    console.log('Click box nr ' + id, color, socketId);
-    socket.emit('coloredPiece', id, room_id, socketId, true);
+    console.log("Click box nr " + id, color, socketId);
+    socket.emit("coloredPiece", id, room_id, socketId, true);
   };
 
   const handleClickStart = () => {
-    let finishTime = ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':' + ('0' + Math.floor((time / 1000) % 60)).slice(-2) + ':' + ('0' + ((time / 10) % 100)).slice(-2);
+    let finishTime =
+      ("0" + Math.floor((time / 60000) % 60)).slice(-2) +
+      ":" +
+      ("0" + Math.floor((time / 1000) % 60)).slice(-2) +
+      ":" +
+      ("0" + ((time / 10) % 100)).slice(-2);
 
-    let allImg = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
+    let allImg = [
+      "63148270d91c31ad1a363a38",
+      "631274fbd0dedd31d93602d0",
+      "63146f30d91c31ad1a363a22",
+      "6314756fd91c31ad1a363a28",
+      "63147d73d91c31ad1a363a2e",
+    ];
 
     let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
     console.log(rightPic);
@@ -198,12 +208,12 @@ const Game = () => {
     for (let i = 0; i < allImg.length; i++) {
       if (allImg[i] === rightPic) {
         rightId.current = i;
-        console.log('index', i);
+        console.log("index", i);
       }
     }
 
-    axios.get('http://localhost:4000/img/imgs').then((res) => {
-      let imgContainer = document.getElementById('imgContainer');
+    axios.get("http://localhost:4000/img/imgs").then((res) => {
+      let imgContainer = document.getElementById("imgContainer");
       console.log(res.data);
 
       res.data.forEach((i) => {
@@ -237,7 +247,7 @@ const Game = () => {
             console.log(img1.current);
           }
           console.log(rightPic);
-          console.log('Rätt bild');
+          console.log("Rätt bild");
           // console.log(i);
           // console.log(img1.current);
         }
@@ -264,17 +274,26 @@ const Game = () => {
 
     if (diableBoxes.current == false) {
       for (let i = 1; i < 226; i++) {
-        yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`} onClick={() => handleBoxClick(i, socket.id)}></div>);
+        yourDivBoxes.push(
+          <div
+            className="gridBox"
+            key={[i]}
+            id={`box${i}`}
+            onClick={() => handleBoxClick(i, socket.id)}
+          ></div>
+        );
 
         if (nr == i) {
-          document.getElementById('box' + i).style.background = color;
+          document.getElementById("box" + i).style.background = color;
         }
       }
 
       return setYourDivs(yourDivBoxes);
     } else {
       for (let i = 1; i < 226; i++) {
-        yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`}></div>);
+        yourDivBoxes.push(
+          <div className="gridBox" key={[i]} id={`box${i}`}></div>
+        );
       }
       return setYourDivs(yourDivBoxes);
     }
@@ -283,7 +302,7 @@ const Game = () => {
 
   //event för klar knappen
   const donePlaying = () => {
-    socket.emit('gameClock', false, room_id);
+    socket.emit("gameClock", false, room_id);
     //id, boolean
     console.log(socket.id);
     //IF SocketID + Color etc.
@@ -291,7 +310,7 @@ const Game = () => {
     // children till YourDivs?
     console.log(yourDivs);
 
-    let gameboard = document.getElementById('gameboard');
+    let gameboard = document.getElementById("gameboard");
     let colorBoard = [];
 
     for (let i = 0; i < gameboard.children.length; i++) {
@@ -302,27 +321,27 @@ const Game = () => {
         id: gameboard.children[i].id,
         color: gameboard.children[i].style.backgroundColor,
       };
-      if (eachDiv.color == '') {
-        eachDiv.color = 'white';
+      if (eachDiv.color == "") {
+        eachDiv.color = "white";
         colorBoard.push(eachDiv);
       } else {
         colorBoard.push(eachDiv);
       }
     }
 
-    console.log('FACIT:', img1.current);
-    console.log('COLORBOARD', colorBoard);
+    console.log("FACIT:", img1.current);
+    console.log("COLORBOARD", colorBoard);
     // let res = img1.img;
 
     let counter = 0;
 
     colorBoard.forEach((num1, index) => {
       const num2 = img1.current[index];
-      console.log('colorBoard:', num1.color, 'Facit:', num2.color);
+      console.log("colorBoard:", num1.color, "Facit:", num2.color);
 
       if (num1.color === num2.color) {
         counter++;
-        console.log('Rätt', counter);
+        console.log("Rätt", counter);
 
         percent = (counter / 225) * 100;
         console.log(percent);
@@ -331,15 +350,15 @@ const Game = () => {
         console.log(pointsCounter);
         points.current = Math.round(percent);
       } else {
-        console.log('Fel');
+        console.log("Fel");
       }
     });
 
-    socket.emit('resultFromUser', pointsCounter);
+    socket.emit("resultFromUser", pointsCounter);
 
-    console.log('COLORBOARD Utanför', colorBoard);
+    console.log("COLORBOARD Utanför", colorBoard);
 
-    socket.emit('donePlaying', socket.id, room_id, points.current);
+    socket.emit("donePlaying", socket.id, room_id, points.current);
 
     setDone(true);
     diableBoxes.current = true;
@@ -351,19 +370,19 @@ const Game = () => {
     let players = Object.values(users);
     let date = new Date();
     let dateString = date.toLocaleString();
-    console.log('USER', players);
+    console.log("USER", players);
     axios
       .post(
-        'http://localhost:4000/img/save',
+        "http://localhost:4000/img/save",
         { colorBoard, room_id, players, dateString },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       )
       .then((res) => {
-        console.log('Hej från axios, save img', res);
+        console.log("Hej från axios, save img", res);
         console.log(res);
       })
       .catch((err) => {
@@ -382,7 +401,7 @@ const Game = () => {
     setTimeout(() => {
       const newStyle = {
         opacity: 1,
-        width: `${pointsCounter}%`,
+        width: `${points.current}%`,
       };
 
       setStyle(newStyle);
@@ -404,16 +423,44 @@ const Game = () => {
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   }, [messages]);
+
+  let chatMessages = messages.map((message, i) => {
+    if (chatUsername === message.username) {
+      console.log("Du");
+
+      return (
+        <li key={i} className="userSelf">
+          <span className="chatUsername">{message.username}: </span>
+          <span className="chatMessage">{message.content}</span>
+        </li>
+      );
+    } else {
+      console.log("Inte du");
+      return (
+        <li key={i} className="userOther">
+          <span className="chatUsername">{message.username}: </span>
+          <span className="chatMessage">{message.content}</span>
+        </li>
+      );
+    }
+
+    // return (
+    //   <li key={i}>
+    //     <span className="user">{message.username}: </span>
+    //     <span className="content">{message.content}</span>
+    //   </li>
+    // );
+  });
 
   // Ifall det inte sker en connection
   if (!connected) {
     return <p>Stand by, connecting....</p>;
   }
 
-  console.log('DONE före', done);
+  // console.log("DONE före", done);
 
   let showBtn = <>Tyvärr är pennorna slut, men du får gärna titta på!</>;
   if (player) {
@@ -442,16 +489,24 @@ const Game = () => {
 
         <div>
           <ul>
-            {messages.map((message, i) => (
+            {/* {messages.map((message, i) => (
               <li key={i}>
                 <span className="user">{message.username}: </span>
                 <span className="content">{message.content}</span>
               </li>
-            ))}
+            ))} */}
+            {chatMessages}
             <div ref={messageEndRef} />
           </ul>
           <form onSubmit={handleSubmit}>
-            <input ref={messageRef} required type="text" placeholder="Skicka meddelande" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <input
+              ref={messageRef}
+              required
+              type="text"
+              placeholder="Skicka meddelande"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
             <button type="submit" id="submit">
               Skicka
             </button>
@@ -462,7 +517,7 @@ const Game = () => {
       <div className="parent" id="gameboard">
         {yourDivs}
       </div>
-      <div id="resultboard" style={{ display: allDone ? 'block' : 'none' }}>
+      <div id="resultboard" style={{ display: allDone ? "block" : "none" }}>
         <div className="containerResult">
           <h2>Resultat</h2>
           <h3>{result}</h3>
@@ -480,9 +535,9 @@ const Game = () => {
           <img id="imgContainer" alt="" />
         </div>
         <div id="display">
-          <span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
-          <span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
-          <span>{('0' + ((time / 10) % 100)).slice(-2)}</span>
+          <span>{("0" + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
+          <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
+          <span>{("0" + ((time / 10) % 100)).slice(-2)}</span>
         </div>
         <h3>{result}</h3>
         <div className="containerForViewer">{showBtn}</div>

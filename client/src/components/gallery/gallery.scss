@@ -2,36 +2,37 @@ section {
   width: 100vw;
   min-height: 100vh;
   max-height: fit-content;
+  overflow-x: auto;
 
   .parentGallery {
     border: none;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
 
     .gridContainer {
-      margin: 8px;
+      // margin: 8px;
       display: grid;
 
       grid-template-columns: repeat(15, 1fr);
 
       grid-template-rows: repeat(15, 1fr);
 
-      grid-column-gap: 0px;
+      grid-column-gap: 1px;
 
-      grid-row-gap: 0px;
-      width: 500px;
-      height: 500px;
+      grid-row-gap: 1px;
 
       .eachGridbox {
-        width: 30px;
-        height: 30px;
+        width: 1.5rem;
+        height: 1.5rem;
         border: 1px solid black;
       }
     }
     .imgInfo {
       margin: 10px;
+      margin-bottom: 3rem;
       color: aliceblue;
     }
   }
@@ -39,7 +40,7 @@ section {
   .startBtn {
     background-color: #16447a;
     border: none;
-    margin-bottom: 1em;
+    margin-bottom: 2rem;
     margin-top: 10px;
     a {
       border-radius: 8px;
