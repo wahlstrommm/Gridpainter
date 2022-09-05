@@ -115,16 +115,14 @@ const handleUserJoined = function (username, room_id, callback) {
   io.to(room.id).emit('user:list', room.users, usersObject);
 };
 
-
 //hanterar facit
 const handleFacit = (room_id) => {
   let allImg = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
 
   let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
 
-  axios.get('http://localhost:4000/img/imgs').then((res) => {
+  axios.get('https://gridpainter-backend.herokuapp.com/img/imgs').then((res) => {
     res.data.forEach((element, i) => {
-
       if (element._id == rightPic) {
         io.to(room_id).emit('facitPic', rightPic, element.img);
         return;
@@ -178,7 +176,6 @@ let room3List = [];
 
 //hantera att en Klar-knapp är klickad
 const handleDonePlaying = (socketId, roomId, pointsCounter) => {
-
   let room1 = 'room1';
   let room2 = 'room2';
   let room3 = 'room3';
@@ -266,4 +263,3 @@ module.exports = function (socket, _io) {
   // hanterar klocka
   socket.on('gameClock', handleGameClock);
 };
-

@@ -1,23 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useChatContext } from "../../context/ChatContextProvider";
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useChatContext } from '../../context/ChatContextProvider';
 // import { PostImgService } from '../../services/PostImgService';
-import "./game.scss";
+import './game.scss';
 
-import axios from "axios";
-import img1a from "./63148270d91c31ad1a363a38.png";
-import img1b from "./631274fbd0dedd31d93602d0.png";
-import img1c from "./63146f30d91c31ad1a363a22.png";
-import img1d from "./6314756fd91c31ad1a363a28.png";
-import img1e from "./63147d73d91c31ad1a363a2e.png";
+import axios from 'axios';
+import img1a from './63148270d91c31ad1a363a38.png';
+import img1b from './631274fbd0dedd31d93602d0.png';
+import img1c from './63146f30d91c31ad1a363a22.png';
+import img1d from './6314756fd91c31ad1a363a28.png';
+import img1e from './63147d73d91c31ad1a363a2e.png';
 
 const Game = () => {
-  const [message, setMessage] = useState("");
-  const [result, setResult] = useState("");
+  const [message, setMessage] = useState('');
+  const [result, setResult] = useState('');
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [connected, setConnected] = useState(false);
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState('');
   const [done, setDone] = useState(false);
   const [allDone, setAllDone] = useState(false);
   const [pointsCounter, setPointsCounter] = useState(0);
@@ -43,7 +43,7 @@ const Game = () => {
   const diableBoxes = useRef(false);
 
   const handleIncomingMessage = (msg) => {
-    console.log("Received a new chat message", msg);
+    console.log('Received a new chat message', msg);
 
     // lägger till meddelande i chatt
     setMessages((prevMessages) => [...prevMessages, msg]);
@@ -56,7 +56,7 @@ const Game = () => {
   const handleRoomStatus = (roomStatus) => {
     console.log(roomStatus);
 
-    if (roomStatus == "får inte spela") {
+    if (roomStatus == 'får inte spela') {
       setWatcher(true);
     } else {
       setPlayer(true);
@@ -80,13 +80,13 @@ const Game = () => {
     };
 
     // emittar meddelande
-    socket.emit("chat:message", msg);
+    socket.emit('chat:message', msg);
 
     // lägger till meddelande i chatt
     setMessages((prevMessages) => [...prevMessages, { ...msg, self: true }]);
 
     //tömmer input och lägger fokus på input igen
-    setMessage("");
+    setMessage('');
     messageRef.current.focus();
   };
   //timern
@@ -108,32 +108,31 @@ const Game = () => {
   useEffect(() => {
     // Inget användarnamn = redirect till home
     if (!chatUsername) {
-      navigate("/");
+      navigate('/');
       return;
     }
 
     // emittar join request
-    socket.emit("user:joined", chatUsername, room_id, (status) => {
+    socket.emit('user:joined', chatUsername, room_id, (status) => {
       // console.log(`Successfully joined ${room_id} as ${chatUsername}`, status);
 
       setConnected(true);
     });
 
-    socket.on("roomAvailability", handleRoomStatus);
+    socket.on('roomAvailability', handleRoomStatus);
 
     // Lyssnar efter meddelanden
-    socket.on("chat:message", handleIncomingMessage);
+    socket.on('chat:message', handleIncomingMessage);
 
     // Lyssnar efter en uppdaterad användarlista
     socket.on('user:list', handleUpdateUsers);
-    
+
     //hanterar facit bild.
     socket.on('facitPic', (rightPic, facitBoard) => {
       img1.current = facitBoard;
       let allImg2 = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
 
       for (let i = 0; i < allImg2.length; i++) {
-
         if (allImg2[i] == rightPic) {
           rightId.current = i;
           console.log(rightId.current);
@@ -146,7 +145,6 @@ const Game = () => {
       }
       if (rightId.current == 1) {
         imgContainer.src = img1b;
-
       }
       if (rightId.current == 2) {
         imgContainer.src = img1c;
@@ -181,11 +179,10 @@ const Game = () => {
       }
     });
 
-
     socket.on('donePlaying', (text, result) => {
       points.current = Math.round(result);
 
-      if (text === "done") {
+      if (text === 'done') {
         setAllDone(true);
       }
     });
@@ -214,26 +211,17 @@ const Game = () => {
 
     if (diableBoxes.current == false) {
       for (let i = 1; i < 226; i++) {
-        yourDivBoxes.push(
-          <div
-            className="gridBox"
-            key={[i]}
-            id={`box${i}`}
-            onClick={() => handleBoxClick(i, socket.id)}
-          ></div>
-        );
+        yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`} onClick={() => handleBoxClick(i, socket.id)}></div>);
 
         if (nr == i) {
-          document.getElementById("box" + i).style.background = color;
+          document.getElementById('box' + i).style.background = color;
         }
       }
 
       return setYourDivs(yourDivBoxes);
     } else {
       for (let i = 1; i < 226; i++) {
-        yourDivBoxes.push(
-          <div className="gridBox" key={[i]} id={`box${i}`}></div>
-        );
+        yourDivBoxes.push(<div className="gridBox" key={[i]} id={`box${i}`}></div>);
       }
       return setYourDivs(yourDivBoxes);
     }
@@ -242,7 +230,6 @@ const Game = () => {
   let timeForCurrentUser;
   //event för klar knappen
   const donePlaying = () => {
-
     let children = [];
     //visar tiden dock som react element
     let timeFromUser = resultTime.props.children;
@@ -269,7 +256,7 @@ const Game = () => {
     // children till YourDivs?
     console.log(yourDivs);
 
-    let gameboard = document.getElementById("gameboard");
+    let gameboard = document.getElementById('gameboard');
     let colorBoard = [];
 
     for (let i = 0; i < gameboard.children.length; i++) {
@@ -277,8 +264,8 @@ const Game = () => {
         id: gameboard.children[i].id,
         color: gameboard.children[i].style.backgroundColor,
       };
-      if (eachDiv.color == "") {
-        eachDiv.color = "white";
+      if (eachDiv.color == '') {
+        eachDiv.color = 'white';
         colorBoard.push(eachDiv);
       } else {
         colorBoard.push(eachDiv);
@@ -289,22 +276,22 @@ const Game = () => {
 
     colorBoard.forEach((num1, index) => {
       const num2 = img1.current[index];
-      console.log("colorBoard:", num1.color, "Facit:", num2.color);
+      console.log('colorBoard:', num1.color, 'Facit:', num2.color);
 
       if (num1.color === num2.color) {
         counter++;
-        console.log("Rätt", counter);
+        console.log('Rätt', counter);
 
         percent = (counter / 225) * 100;
 
         setPointsCounter(percent);
         points.current = Math.round(percent);
       } else {
-        console.log("Fel");
+        console.log('Fel');
       }
     });
 
-    socket.emit("resultFromUser", pointsCounter);
+    socket.emit('resultFromUser', pointsCounter);
 
     socket.emit('donePlaying', socket.id, room_id, points.current);
 
@@ -317,11 +304,11 @@ const Game = () => {
 
     axios
       .post(
-        "http://localhost:4000/img/save",
+        'https://gridpainter-backend.herokuapp.com/img/save',
         { colorBoard, room_id, players, dateString },
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       )
@@ -361,13 +348,13 @@ const Game = () => {
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   }, [messages]);
 
   let chatMessages = messages.map((message, i) => {
     if (chatUsername === message.username) {
-      console.log("Du");
+      console.log('Du');
 
       return (
         <li key={i} className="userSelf">
@@ -376,7 +363,7 @@ const Game = () => {
         </li>
       );
     } else {
-      console.log("Inte du");
+      console.log('Inte du');
       return (
         <li key={i} className="userOther">
           <span className="chatUsername">{message.username}: </span>
@@ -448,14 +435,7 @@ const Game = () => {
             <div ref={messageEndRef} />
           </ul>
           <form onSubmit={handleSubmit}>
-            <input
-              ref={messageRef}
-              required
-              type="text"
-              placeholder="Skicka meddelande"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
+            <input ref={messageRef} required type="text" placeholder="Skicka meddelande" value={message} onChange={(e) => setMessage(e.target.value)} />
             <button type="submit" id="submit">
               Skicka
             </button>
@@ -466,7 +446,7 @@ const Game = () => {
       <div className="parent" id="gameboard">
         {yourDivs}
       </div>
-      <div id="resultboard" style={{ display: allDone ? "block" : "none" }}>
+      <div id="resultboard" style={{ display: allDone ? 'block' : 'none' }}>
         <div className="containerResult">
           <h2>Resultat</h2>
           <h3>{points.current}% rätt</h3>
@@ -483,9 +463,9 @@ const Game = () => {
           <img id="imgContainer" src="" alt="" />
         </div>
         <div id="display">
-          <span>{("0" + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
-          <span>{("0" + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
-          <span>{("0" + ((time / 10) % 100)).slice(-2)}</span>
+          <span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
+          <span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
+          <span>{('0' + ((time / 10) % 100)).slice(-2)}</span>
         </div>
         <h3>{result}</h3>
         <div className="containerForViewer">{showBtn}</div>
