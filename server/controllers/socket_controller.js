@@ -1,4 +1,6 @@
 require('dotenv').config();
+const axios = require('axios');
+
 const debug = require('debug')('gridpainter:socket_controller');
 let io = null;
 
@@ -66,7 +68,7 @@ let allUsers = [];
 
 //när en användare joinar
 const handleUserJoined = function (username, room_id, callback) {
-  debug(`User ${username} with socket id ${this.id} wants to join room '${room_id}'`);
+  // debug(`User ${username} with socket id ${this.id} wants to join room '${room_id}'`);
 
   this.join(room_id);
 
@@ -84,12 +86,12 @@ const handleUserJoined = function (username, room_id, callback) {
 
   if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 4) {
     io.to(room.id).emit('roomAvailability', 'får spela');
-    debug('Hej här spela');
-    debug('room_id', room_id, 'room.id', room.id);
 
     usersObject = [];
 
     if (Object.values(room.users).length == 4 && room_id == room.id) {
+      //hämta bild
+      handleFacit(room.id);
       let colors = ['blue', 'red', 'yellow', 'green'];
       let users = Object.values(room.users);
       let keys = Object.keys(room.users);
@@ -104,7 +106,6 @@ const handleUserJoined = function (username, room_id, callback) {
         let userObject = { id: key, username: currentUser, color: currentColor };
         usersObject.push(userObject);
         allUsers.push(userObject);
-        debug('vårt objekt', userObject);
       });
     }
   } else {
@@ -114,19 +115,36 @@ const handleUserJoined = function (username, room_id, callback) {
   io.to(room.id).emit('user:list', room.users, usersObject);
 };
 
+
+//hanterar facit
+const handleFacit = (room_id) => {
+  let allImg = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
+
+  let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
+
+  axios.get('http://localhost:4000/img/imgs').then((res) => {
+    res.data.forEach((element, i) => {
+
+      if (element._id == rightPic) {
+        io.to(room_id).emit('facitPic', rightPic, element.img);
+        return;
+      }
+    });
+  });
+};
+
 //hanterar när en användare skickar ett meddelande
 const handleChatMessage = async function (data) {
   debug('Someone said something: ', data);
 
   const room = getRoomById(data.room);
 
-  // emit `chat:message` event to everyone EXCEPT the sender
   this.broadcast.to(room.id).emit('chat:message', data);
 };
 
 //hanterar när en användare går ur ett rum
 const handleUserLeft = async function (username, room_id) {
-  debug(`User ${username} with socket id ${this.id} left room '${room_id}'`);
+  // debug(`User ${username} with socket id ${this.id} left room '${room_id}'`);
 
   this.leave(room_id);
 
@@ -142,8 +160,6 @@ const handleUserLeft = async function (username, room_id) {
 //hantera när en ruta är klickad
 const handleColoredPiece = async function (piece, roomId, socketId) {
   let rightColor;
-
-  console.log('log rad 141', piece, roomId, socketId);
 
   for (let i = 0; i < allUsers.length; i++) {
     rightColor = allUsers[i].color;
@@ -162,8 +178,6 @@ let room3List = [];
 
 //hantera att en Klar-knapp är klickad
 const handleDonePlaying = (socketId, roomId, pointsCounter) => {
-  console.log('vilken person trycker på boxen rutan Socket:', socketId);
-  console.log('roomId', roomId);
 
   let room1 = 'room1';
   let room2 = 'room2';
@@ -179,12 +193,7 @@ const handleDonePlaying = (socketId, roomId, pointsCounter) => {
     console.log('Ingen matchning i rum');
   }
 
-  console.log('room1List', room1List);
-
-  // console.log('Counter:', counter1, counter2, counter3);
   if (room1List.length || room2List.length || room3List.length == 4) {
-    console.log('hamnar i doneplaying, if-sats');
-
     if (room1List.length == 4) {
       io.to(roomId).emit('donePlaying', 'done', room1List[3].points);
       room1List = [];
@@ -227,35 +236,6 @@ const handleGameClock = (roomId, state, timeFromUser) => {
   //skickar ut till alla att någon har klickat på "klar"
 };
 
-//hanterar att spara en bild
-// let images = [[]];
-
-// const handleSaveImg = async function (img, roomId) {
-//   console.log('img', img, roomId);
-// const url = (process.env.MONGOATLAS);
-// mongoose.connect(url)
-
-// images.push(img);
-// console.log("images", images.length);
-// Här kan man jämföra med de bilderna vi har istället jag provade det
-// let count = 0;
-
-// images.forEach(el => {
-// for (let i = 0; i < img; i++){
-//   if (el.color == img[i].color) {
-//     count++;
-//     console.log('image is equal to img', count);
-//     console.log(roomId);
-//     io.to(roomId).emit('result', 'success');
-//   }
-//   else if (el.color == img[i].color) {
-//     count--;
-//     console.log('image is not equal to img ', count);
-//     io.to(roomId).emit('result', 'fail');
-//   }
-// });
-// };
-
 //exporterar controllern
 module.exports = function (socket, _io) {
   io = _io;
@@ -283,9 +263,7 @@ module.exports = function (socket, _io) {
   //hanterar spelare som är "klara"
   socket.on('donePlaying', handleDonePlaying);
 
-  // //hanterar spelare som är "klara"
-  // socket.on('saveImg', handleSaveImg);
-
   // hanterar klocka
   socket.on('gameClock', handleGameClock);
 };
+

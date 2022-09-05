@@ -11,9 +11,6 @@ import img1c from './63146f30d91c31ad1a363a22.png';
 import img1d from './6314756fd91c31ad1a363a28.png';
 import img1e from './63147d73d91c31ad1a363a2e.png';
 
-
-// import img from '`${rightId.current}.png`'
-
 const Game = () => {
   const [message, setMessage] = useState('');
   const [result, setResult] = useState('');
@@ -44,20 +41,6 @@ const Game = () => {
   const img1 = useRef({});
   const rightId = useRef(Number);
   const diableBoxes = useRef(false);
-
-  // const effectRan = useRef(false);
-
-  // useEffect(() => {
-  //    const getImgs = () => {
-  //     axios.get("http://localhost:4000/img/imgs").then(res => {
-  //       console.log(res.data);
-  //     })
-  //   }
-  //   return () => {
-  //     console.log("Game component unmount");
-  //     effectRan.current = true;
-  //   }
-  // },[])
 
   const handleIncomingMessage = (msg) => {
     console.log('Received a new chat message', msg);
@@ -121,7 +104,7 @@ const Game = () => {
 
     return () => clearInterval(interval);
   }, [timerOn]);
-
+  let imgPic = <></>;
   //connectar till rum
   useEffect(() => {
     // Inget användarnamn = redirect till home
@@ -144,13 +127,41 @@ const Game = () => {
 
     // Lyssnar efter en uppdaterad användarlista
     socket.on('user:list', handleUpdateUsers);
+    //hanterar facit bild.
 
+    socket.on('facitPic', (rightPic, facitBoard) => {
+      img1.current = facitBoard;
+      let allImg2 = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
+
+      for (let i = 0; i < allImg2.length; i++) {
+
+        if (allImg2[i] == rightPic) {
+          rightId.current = i;
+          console.log(rightId.current);
+        }
+      }
+      let imgContainer = document.getElementById('imgContainer');
+
+      if (rightId.current == 0) {
+        imgContainer.src = img1a;
+      }
+      if (rightId.current == 1) {
+        imgContainer.src = img1b;
+
+      }
+      if (rightId.current == 2) {
+        imgContainer.src = img1c;
+      }
+      if (rightId.current == 3) {
+        imgContainer.src = img1d;
+      }
+      if (rightId.current == 4) {
+        imgContainer.src = img1e;
+      }
+    });
     // Lyssnar på färgade rutor
     socket.on('coloredPiece', (nr, color, socketId, state) => {
-      console.log(nr, color, socketId, state);
-
       setColor(color);
-      // SetStart(state);
       generateYourDivs(nr, color);
     });
 
@@ -172,9 +183,6 @@ const Game = () => {
     });
 
     socket.on('donePlaying', (text, result) => {
-      console.log(text, result);
-
-      console.log(result);
       points.current = Math.round(result);
 
       if (text === 'done') {
@@ -190,78 +198,15 @@ const Game = () => {
       socket.off('coloredPiece');
       socket.off('donePlaying');
       socket.off('user:joined');
+      socket.off('facitPic');
       socket.off('gameClock');
       socket.emit('user:left', chatUsername, room_id);
     };
   }, [socket, room_id, chatUsername, navigate, points]);
 
-  // starta att måla fritt
-  useEffect(() => {
-    handleClickStart();
-  }, []);
-
   // hantera klick på en ruta i griden
   const handleBoxClick = (id, socketId) => {
-    console.log('Click box nr ' + id, color, socketId);
     socket.emit('coloredPiece', id, room_id, socketId, true);
-  };
-
-  const handleClickStart = () => {
-    let finishTime = ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':' + ('0' + Math.floor((time / 1000) % 60)).slice(-2) + ':' + ('0' + ((time / 10) % 100)).slice(-2);
-
-    let allImg = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
-
-    let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
-    console.log(rightPic);
-
-    for (let i = 0; i < allImg.length; i++) {
-      if (allImg[i] === rightPic) {
-        rightId.current = i;
-        console.log('index', i);
-      }
-    }
-
-    axios.get('http://localhost:4000/img/imgs').then((res) => {
-      let imgContainer = document.getElementById('imgContainer');
-      console.log(res.data);
-
-      res.data.forEach((i) => {
-        console.log(i._id);
-        if (i._id == rightPic) {
-          console.log(rightId);
-
-          if (rightId.current == 0) {
-            imgContainer.src = img1a;
-            img1.current = i.img;
-            console.log(img1.current);
-          }
-          if (rightId.current == 1) {
-            imgContainer.src = img1b;
-            img1.current = i.img;
-            console.log(img1.current);
-          }
-          if (rightId.current == 2) {
-            imgContainer.src = img1c;
-            img1.current = i.img;
-            console.log(img1.current);
-          }
-          if (rightId.current == 3) {
-            imgContainer.src = img1d;
-            img1.current = i.img;
-            console.log(img1.current);
-          }
-          if (rightId.current == 4) {
-            imgContainer.src = img1e;
-            img1.current = i.img;
-            console.log(img1.current);
-          }
-          console.log(rightPic);
-          console.log('Rätt bild');
-          // console.log(i);
-          // console.log(img1.current);
-        }
-      });
-    });
   };
 
   const generateYourDivs = async (nr, color) => {
@@ -318,9 +263,6 @@ const Game = () => {
     let colorBoard = [];
 
     for (let i = 0; i < gameboard.children.length; i++) {
-      // console.log("Children:", gameboard.children[i].id, " är ", gameboard.children[i].style.backgroundColor);
-      // console.log("Children:", gameboard.children[i].style);
-
       let eachDiv = {
         id: gameboard.children[i].id,
         color: gameboard.children[i].style.backgroundColor,
@@ -332,11 +274,6 @@ const Game = () => {
         colorBoard.push(eachDiv);
       }
     }
-
-    console.log('FACIT:', img1.current);
-    console.log('COLORBOARD', colorBoard);
-    // let res = img1.img;
-
     let counter = 0;
 
     colorBoard.forEach((num1, index) => {
@@ -348,10 +285,8 @@ const Game = () => {
         console.log('Rätt', counter);
 
         percent = (counter / 225) * 100;
-        console.log(percent);
 
         setPointsCounter(percent);
-        console.log(pointsCounter);
         points.current = Math.round(percent);
       } else {
         console.log('Fel');
@@ -360,21 +295,14 @@ const Game = () => {
 
     socket.emit('resultFromUser', pointsCounter);
 
-    console.log('COLORBOARD Utanför', colorBoard);
-
     socket.emit('donePlaying', socket.id, room_id, points.current);
 
     setDone(true);
     diableBoxes.current = true;
 
-    // facit.forEach(function (item, index) {
-    //   console.log(item, colorBoard[index]);
-    // });
-
     let players = Object.values(users);
     let date = new Date();
     let dateString = date.toLocaleString();
-    console.log('USER', players);
     axios
       .post(
         'http://localhost:4000/img/save',
@@ -386,7 +314,6 @@ const Game = () => {
         }
       )
       .then((res) => {
-        console.log('Hej från axios, save img', res);
         console.log(res);
       })
       .catch((err) => {
@@ -430,8 +357,6 @@ const Game = () => {
   if (!connected) {
     return <p>Stand by, connecting....</p>;
   }
-
-  // console.log('DONE före', done);
 
   let showBtn = <>Tyvärr är pennorna slut, men du får gärna titta på!</>;
   if (player) {
@@ -499,7 +424,6 @@ const Game = () => {
           <h3>{points.current}% rätt</h3>
           <h3>{finalTime}</h3>
           <Progress done={points.current} />
-          {/* <button className="resultBtn" onClick={saveImg}>Ladda ner bild</button> */}
           <button className="resultBtn">
             <Link to="/">Spela igen</Link>
           </button>
@@ -508,7 +432,7 @@ const Game = () => {
 
       <div className="leftWrapper">
         <div>
-          <img id="imgContainer" alt="" />
+          <img id="imgContainer" src="" alt="" />
         </div>
         <div id="display">
           <span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
