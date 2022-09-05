@@ -23,17 +23,18 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/imgs', (req, res) => {
+
+
   req.app.locals.db
     .collection('Imgs')
     .find()
     .toArray()
     .then((result) => {
       res.send(result);
-      // console.log(result);
+      console.log(result);
     })
     .catch((err) => {
       res.send(err);
-      // console.log(err);
     });
 });
 
@@ -61,31 +62,5 @@ router.post('/save', async (req, res) => {
   }
 });
 
-// router.post('/', (res, req) => {
-
-//     req.app.locals.db.collection("Imgs").insert({ img: req.body.img }).then(
-//         result => {
-//             console.log("One image added", result);
-//             // res.redirect('/show');
-//             res.json(result);
-//         }
-//     );
-// });
-
-// router.get('/', (res, req) => {
-//     console.log(res.body);
-//     console.log(req.body);
-// });
-
-// router.delete("/", async (req, res) => {
-
-//     req.app.locals.db.collection('Gallery').deleteMany({}).then(
-//         result => {
-//             console.log("All images deleted", result);
-//             // res.redirect('/show');
-//             res.json(result);
-//         }
-//     );
-// })
 
 module.exports = router;

@@ -86,8 +86,6 @@ const handleUserJoined = function (username, room_id, callback) {
 
   if (Object.values(room.users).length === 1 || Object.values(room.users).length <= 4) {
     io.to(room.id).emit('roomAvailability', 'får spela');
-    // debug('Hej här spela');
-    // debug('room_id', room_id, 'room.id', room.id);
 
     usersObject = [];
 
@@ -108,7 +106,6 @@ const handleUserJoined = function (username, room_id, callback) {
         let userObject = { id: key, username: currentUser, color: currentColor };
         usersObject.push(userObject);
         allUsers.push(userObject);
-        // debug('vårt objekt', userObject);
       });
     }
   } else {
@@ -118,42 +115,22 @@ const handleUserJoined = function (username, room_id, callback) {
   io.to(room.id).emit('user:list', room.users, usersObject);
 };
 
-let allImg = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
 
 //hanterar facit
-const handleFacit = async function (room_id) {
-  console.log('ROOM ID', room_id);
-  let facitArray = [];
-  let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
-  axios.get('http://localhost:4000/img/imgs').then((res) => {
-    facitArray.push(res.data);
-    // console.log('FACIT ARRAY', facitArray);
-    // console.log('RIGHTPIC', rightPic);
-    let id = '';
+const handleFacit = (room_id) => {
+  let allImg = ['63148270d91c31ad1a363a38', '631274fbd0dedd31d93602d0', '63146f30d91c31ad1a363a22', '6314756fd91c31ad1a363a28', '63147d73d91c31ad1a363a2e'];
 
-    facitArray.forEach((element, i) => {
-      id = element[i]._id;
-      if (element[i]._id == rightPic) {
-        console.log('ÄR I IF');
-        io.to(room_id).emit('facitPic', rightPic, element[i].img);
+  let rightPic = allImg[Math.floor(Math.random() * allImg.length)];
+
+  axios.get('http://localhost:4000/img/imgs').then((res) => {
+    res.data.forEach((element, i) => {
+
+      if (element._id == rightPic) {
+        io.to(room_id).emit('facitPic', rightPic, element.img);
         return;
       }
     });
-    // if(facitArray[i].id){
-
-    // }
   });
-  // 6310a34fd91c31ad1a363a03
-  // 6310a34fd91c31ad1a363a03
-  // 6310a34fd91c31ad1a363a03
-  // 63147d73d91c31ad1a363a2e
-  // 631274fbd0dedd31d93602d0
-  // for (let i = 0; i < allImg.length; i++) {
-  //   if (allImg[i] === rightPic) {
-  //     // rightId.current = i;
-  //     console.log('index', i);
-  //   }
-  // }
 };
 
 //hanterar när en användare skickar ett meddelande
@@ -162,7 +139,6 @@ const handleChatMessage = async function (data) {
 
   const room = getRoomById(data.room);
 
-  // emit `chat:message` event to everyone EXCEPT the sender
   this.broadcast.to(room.id).emit('chat:message', data);
 };
 
@@ -185,8 +161,6 @@ const handleUserLeft = async function (username, room_id) {
 const handleColoredPiece = async function (piece, roomId, socketId) {
   let rightColor;
 
-  // console.log('log rad 141', piece, roomId, socketId);
-
   for (let i = 0; i < allUsers.length; i++) {
     rightColor = allUsers[i].color;
 
@@ -204,8 +178,6 @@ let room3List = [];
 
 //hantera att en Klar-knapp är klickad
 const handleDonePlaying = (socketId, roomId, pointsCounter) => {
-  // console.log('vilken person trycker på boxen rutan Socket:', socketId);
-  // console.log('roomId', roomId);
 
   let room1 = 'room1';
   let room2 = 'room2';
@@ -221,12 +193,7 @@ const handleDonePlaying = (socketId, roomId, pointsCounter) => {
     console.log('Ingen matchning i rum');
   }
 
-  // console.log('room1List', room1List);
-
-  // console.log('Counter:', counter1, counter2, counter3);
   if (room1List.length || room2List.length || room3List.length == 4) {
-    // console.log('hamnar i doneplaying, if-sats');
-
     if (room1List.length == 4) {
       io.to(roomId).emit('donePlaying', 'done', room1List[3].points);
       room1List = [];
@@ -237,7 +204,7 @@ const handleDonePlaying = (socketId, roomId, pointsCounter) => {
       io.to(roomId).emit('donePlaying', 'done', room3List[3].points);
       room3List = [];
     } else {
-      // console.log('Hamnar i else');
+      console.log('Hamnar i else');
     }
   } else {
     // io.to(roomId).emit('donePlaying', 'nej');
@@ -269,35 +236,6 @@ const handleGameClock = (roomId, state, timeFromUser) => {
   //skickar ut till alla att någon har klickat på "klar"
 };
 
-//hanterar att spara en bild
-// let images = [[]];
-
-// const handleSaveImg = async function (img, roomId) {
-//   console.log('img', img, roomId);
-// const url = (process.env.MONGOATLAS);
-// mongoose.connect(url)
-
-// images.push(img);
-// console.log("images", images.length);
-// Här kan man jämföra med de bilderna vi har istället jag provade det
-// let count = 0;
-
-// images.forEach(el => {
-// for (let i = 0; i < img; i++){
-//   if (el.color == img[i].color) {
-//     count++;
-//     console.log('image is equal to img', count);
-//     console.log(roomId);
-//     io.to(roomId).emit('result', 'success');
-//   }
-//   else if (el.color == img[i].color) {
-//     count--;
-//     console.log('image is not equal to img ', count);
-//     io.to(roomId).emit('result', 'fail');
-//   }
-// });
-// };
-
 //exporterar controllern
 module.exports = function (socket, _io) {
   io = _io;
@@ -325,17 +263,7 @@ module.exports = function (socket, _io) {
   //hanterar spelare som är "klara"
   socket.on('donePlaying', handleDonePlaying);
 
-  // //hanterar spelare som är "klara"
-  // socket.on('saveImg', handleSaveImg);
-
   // hanterar klocka
   socket.on('gameClock', handleGameClock);
 };
-//hämta från servern när de är tre/fyra
-//random
-//skickar ut vilken id + "facit"
-//tar emot och visar
-//Matchar med bildens namn och id
-//Fördelen blir ett axios anrop än flera
-//Skickar ut ett till alla
-//Klienterna tar hänsyn till servern och inte tvärtom
+
