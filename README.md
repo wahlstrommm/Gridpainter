@@ -42,10 +42,10 @@ Spara – En bild skall kunna sparas och öppnas igen.
 
 | Spelare             | Färg                                                                |
 | ----------------- | ------------------------------------------------------------------ |
-| Spelare 1 | blå/blue |
-| Spelare 2 | röd/red |
-| Spelare 3 | gul/yellow |
-| Spelare 4 | grön/green|
+| Spelare 1 | Blå/Blue |
+| Spelare 2 | Röd/Red |
+| Spelare 3 | Gul/Yellow |
+| Spelare 4 | Grön/Green|
 
 
 ## Demo
