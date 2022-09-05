@@ -75,7 +75,7 @@ För att starta backend
 ## Environment Variables
 
 För att starta och använda projeket behöver du inte
-några speciella Environment variabler då allt finns .env filen
+några speciella Environment variabler då allt som du behöver finns .env filen i server mappen.
 
 Dock måste du ha laddat ner .env. Men det följer med ifall du 
 installerar alla paketen som följer med repot.
